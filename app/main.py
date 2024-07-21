@@ -11,7 +11,7 @@ def createTokens(fileContents: str):
             elif (char == ')'):
                 print("RIGHT_PAREN ) null")
             elif (char == '{'):
-                print("RIGHT_BRACE ) null")
+                print("LEFT_BRACE ) null")
             elif (char == '}'):
                 print("RIGHT_BRACE ) null")
         i+=1
