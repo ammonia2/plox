@@ -14,7 +14,10 @@ tokenDict = {
     ';': "SEMICOLON",
 }
 
+hadError = False
+
 def reportError(lineNum, char):
+    hadError = True
     print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
 def createTokens(filename: str):
@@ -62,6 +65,8 @@ def main():
     else:
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
+    if (hadError):
+        sys.exit(65)
 
 if __name__ == "__main__":
     main()
