@@ -9,7 +9,7 @@ def createTokens(fileContents: str):
             if char == '(':
                 print("LEFT_PAREN ( null")
             elif (char == ')'):
-                print("RIGHT_PAREN ( null")
+                print("RIGHT_PAREN ) null")
         i+=1
         if (i<wordLen):
             print("IDENTIFIER space null")
