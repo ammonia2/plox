@@ -21,7 +21,7 @@ def reportError(lineNum, char):
     print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
 def createTokens(filename: str):
-    lineNum = 0
+    lineNum = 1
     with open(filename) as file:
         i=0
         line = file.readline()
