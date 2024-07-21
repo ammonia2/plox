@@ -1,5 +1,20 @@
 import sys
 
+def createTokens(fileContents: str):
+    words = fileContents.split()
+    i=0
+    wordLen = len(words)
+    for word in words:
+        for char in word:
+            if char == '(':
+                print("LEFT_PAREN ( null")
+            elif (char == ')'):
+                print("RIGHT_PAREN ( null")
+        i+=1
+        if (i<wordLen):
+            print("IDENTIFIER space null")
+
+    print("EOF  null")
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -21,7 +36,7 @@ def main():
 
     # Uncomment this block to pass the first stage
     if file_contents:
-        raise NotImplementedError("Scanner not implemented")
+        createTokens(file_contents)
     else:
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
