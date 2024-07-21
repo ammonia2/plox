@@ -14,18 +14,28 @@ tokenDict = {
     ';': "SEMICOLON",
 }
 
-def createTokens(fileContents: str):
-    words = fileContents.split()
-    i=0
-    wordLen = len(words)
-    for word in words:
-        for char in word:
-            if char in tokenDict:
-                print(f"{tokenDict[char]} {char} null")
-        i+=1
-        if (i<wordLen):
-            print("IDENTIFIER space null")
+def reportError(lineNum, char):
+    print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
+def createTokens(filename: str):
+    lineNum = 0
+    with open(filename) as file:
+        i=0
+        line = file.readline()
+        words = line.split()
+        wordLen = len(words)
+        for word in words:
+            for char in word:
+                if char in tokenDict:
+                    print(f"{tokenDict[char]} {char} null")
+                else:
+                    reportError(lineNum, char)
+            i+=1
+            if (i<wordLen):
+                print("IDENTIFIER space null")
+        
+        lineNum+=1
+    
     print("EOF  null")
 
 def main():
@@ -48,7 +58,7 @@ def main():
 
     # Uncomment this block to pass the first stage
     if file_contents:
-        createTokens(file_contents)
+        createTokens(filename)
     else:
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
