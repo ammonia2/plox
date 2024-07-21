@@ -66,7 +66,7 @@ def main():
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
     if (hadError):
-        sys.exit(65)
+        exit(65)
 
 if __name__ == "__main__":
     main()
