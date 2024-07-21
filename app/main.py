@@ -33,7 +33,6 @@ def createTokens(filename: str):
                     print(f"{tokenDict[char]} {char} null")
                 else:
                     reportError(lineNum, char)
-                    exit(65)
             i+=1
             if (i<wordLen):
                 print("IDENTIFIER space null")
