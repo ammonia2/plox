@@ -17,27 +17,25 @@ tokenDict = {
 hadError = False
 
 def reportError(lineNum, char):
+    global hadError
     hadError = True
     print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
 def createTokens(filename: str):
     lineNum = 1
     with open(filename) as file:
-        i=0
-        line = file.readline()
-        words = line.split()
-        wordLen = len(words)
-        for word in words:
-            for char in word:
-                if char in tokenDict:
-                    print(f"{tokenDict[char]} {char} null")
-                else:
-                    reportError(lineNum, char)
-            i+=1
-            if (i<wordLen):
-                print("IDENTIFIER space null")
-        
-        lineNum+=1
+        for line in file:  # Process each line in the file
+            words = line.split()
+            wordLen = len(words)
+            for i, word in enumerate(words):
+                for char in word:
+                    if char in tokenDict:
+                        print(f"{tokenDict[char]} {char} null")
+                    else:
+                        reportError(lineNum, char)
+                if i < wordLen - 1:
+                    print("IDENTIFIER space null")
+            lineNum += 1
     
     print("EOF  null")
 
