@@ -1,19 +1,27 @@
 import sys
 
+tokenDict = {
+    '(': "LEFT_PAREN",
+    ')': "RIGHT_PAREN",
+    '{': "LEFT_BRACE",
+    '}': "RIGHT_BRACE",
+    '*': "STAR",
+    '.': "DOT",
+    ',': "COMMA",
+    '+': "PLUS",
+    '/': "SLASH",
+    '-': "MINUS",
+    ';': "SEMICOLON",
+}
+
 def createTokens(fileContents: str):
     words = fileContents.split()
     i=0
     wordLen = len(words)
     for word in words:
         for char in word:
-            if char == '(':
-                print("LEFT_PAREN ( null")
-            elif (char == ')'):
-                print("RIGHT_PAREN ) null")
-            elif (char == '{'):
-                print("LEFT_BRACE { null")
-            elif (char == '}'):
-                print("RIGHT_BRACE } null")
+            if char in tokenDict:
+                print(f"{tokenDict[char]} {char} null")
         i+=1
         if (i<wordLen):
             print("IDENTIFIER space null")
