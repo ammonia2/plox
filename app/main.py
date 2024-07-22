@@ -33,7 +33,7 @@ class Scanner:
             self.start = self.current
             self.scanToken()
 
-        self.tokenss.append(Token("EOF", "", null, lineNum))
+        self.tokenss.append(Token("EOF", "", null, self.lineNum))
         print("EOF  null")
 
     def scanToken(self):
@@ -41,17 +41,17 @@ class Scanner:
         next_char = self.source[self.start+1] if (self.start+1 <= len(self.source)) else ''
         char_combo = char +next_char
         if (char_combo in tokenDict):
-            newToken = Token(tokenDict[char_combo], char_combo, "null", lineNum)
+            newToken = Token(tokenDict[char_combo], char_combo, "null", self.lineNum)
             print(newToken.tokenisedForm())
             self.addToken(newToken)
             self.current+=2
         elif char in tokenDict:
-            newToken = Token(tokenDict[char], char, "null", lineNum)
+            newToken = Token(tokenDict[char], char, "null", self.lineNum)
             print(newToken.tokenisedForm())
             self.addToken(newToken)
             self.current+=1
         else:
-            reportError(lineNum, char)
+            reportError(self.lineNum, char)
             j +=1
 
     def isAtEnd(self) -> bool:
