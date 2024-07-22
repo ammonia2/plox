@@ -55,7 +55,7 @@ class Scanner:
             self.current+=1
         elif char==' ' or char == '\n' or char == '\t':
             self.current+=1
-            if (char == '\n'): lineNum+=1
+            if (char == '\n'): self.lineNum+=1
         else:
             self.reportError(self.lineNum, char)
             self.current+=1
@@ -63,7 +63,7 @@ class Scanner:
     def eoline(self):
         while (self.current < len(self.source) and self.source[self.current] != '\n'):
             self.current+=1
-        lineNum +=1
+        self.lineNum +=1
 
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
