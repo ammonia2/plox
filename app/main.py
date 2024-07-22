@@ -79,8 +79,6 @@ tokenDict = {
     '>=': "GREATER_EQUAL",
 }
 
-primaryScanner = Scanner()
-
 hadError = False
 
 def reportError(lineNum, char):
