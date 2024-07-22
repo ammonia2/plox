@@ -48,6 +48,7 @@ def reportError(lineNum, char):
     print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
 def createTokens(filename: str):
+    global primaryScanner, tokenDict
     lineNum = 1
     with open(filename) as file:
         for line in file:
