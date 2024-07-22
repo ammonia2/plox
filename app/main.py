@@ -64,12 +64,20 @@ class Scanner:
                 numVal += '.0'
                 floatAdded= True
 
-            # while (not self.isAtEnd() and  ( self.isDigit(self.source[self.current]) or self.source[self.current]=='.' )):
-            # self.current+=1
             newToken = Token("NUMBER", numVal if (not floatAdded) else numVal[:-2], numVal, self.lineNum)
             self.addToken(newToken)
             print(newToken.tokenisedForm())
+        elif self.isAlpha(char):
+            identifierVal = ""
+            c = char
+            while (not self.isAtEnd() and  isAlphaNumeric(c)):
+                identifierVal+=c
+                self.current +=1
+                c = self.source[self.current] if (not self.isAtEnd()) else ''
 
+            newToken = Token("IDENTIFIER", identifierVal, "null", self.lineNum)
+            print(newToken.tokenisedForm())
+            self.addToken(newToken)
         elif (char == '"'):
             strVal = "\""
             endFound = False
@@ -113,6 +121,12 @@ class Scanner:
     def isDigit(self, c) -> bool:
         return (c >= '0' and c <= '9')
 
+    def isAlpha(self, c) -> bool:
+        return ((c>='a' and c<='z') or (c>='A' and c<='Z') or c=='_')
+
+    def isAlphaNumeric(self, c)-> bool:
+        return (self.isAlpha(c) or self.isDigit(c))
+
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
 
@@ -143,6 +157,25 @@ tokenDict = {
     '>': "GREATER",
     '>=': "GREATER_EQUAL",
     '/': "SLASH",
+}
+
+keywords = {
+    "and": "AND",
+    "class": "CLASS",
+    "else": "ELSE",
+    "false": "FALSE",
+    "for": "FOR",
+    "fun": "FUN",
+    "if": "IF",
+    "nil": "NIL",
+    "or": "OR",
+    "print": "PRINT",
+    "return": "RETURN",
+    "super": "SUPER",
+    "this": "THIS",
+    "true": "TRUE",
+    "var": "VAR",
+    "while": "WHILE"
 }
 
 def main():
