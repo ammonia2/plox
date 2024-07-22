@@ -33,7 +33,7 @@ class Scanner:
             self.start = self.current
             self.scanToken()
 
-        self.tokenss.append(Token("EOF", "", null, self.lineNum))
+        self.tokenss.append(Token("EOF", "", "null", self.lineNum))
         print("EOF  null")
 
     def scanToken(self):
