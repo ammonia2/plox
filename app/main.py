@@ -41,6 +41,7 @@ class Scanner:
         char = self.source[self.start]
         next_char = self.source[self.start+1] if (self.start+1 < len(self.source)) else ''
         char_combo = char +next_char
+        floatAdded =False
         if (char_combo == '//'):
             self.eoline()
         elif self.isDigit(char):
@@ -61,10 +62,11 @@ class Scanner:
                     c = self.source[self.current] if (self.isAtEnd()==False) else ''
             else:
                 numVal += '.0'
+                floatAdded= True
 
             # while (not self.isAtEnd() and  ( self.isDigit(self.source[self.current]) or self.source[self.current]=='.' )):
             # self.current+=1
-            newToken = Token("NUMBER", numVal, numVal, self.lineNum)
+            newToken = Token("NUMBER", numVal if (not floatAdded) else numVal[:-2], numVal, self.lineNum)
             self.addToken(newToken)
             print(newToken.tokenisedForm())
 
