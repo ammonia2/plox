@@ -39,7 +39,7 @@ class Scanner:
 
     def scanToken(self):
         char = self.source[self.start]
-        next_char = self.source[self.start+1] if (self.start+1 <= len(self.source)) else ''
+        next_char = self.source[self.start+1] if (self.start+1 < len(self.source)) else ''
         char_combo = char +next_char
         if (char_combo in tokenDict):
             newToken = Token(tokenDict[char_combo], char_combo, "null", self.lineNum)
