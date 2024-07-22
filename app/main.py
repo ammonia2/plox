@@ -51,7 +51,7 @@ class Scanner:
                 strVal += self.source[self.current]
                 if (self.source[self.current] == '\n'): self.lineNum +=1
                 self.current+=1
-                if (self.source[self.current]=='"'): endFound = True
+                if (self.isAtEnd()==False and self.source[self.current]=='"'): endFound = True
             strVal += '\"'
             if (self.isAtEnd() and endFound==False):
                 self.reportError(self.lineNum, "Unterminated string.")
