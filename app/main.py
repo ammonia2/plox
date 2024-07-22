@@ -1,4 +1,27 @@
 import sys
+import regex as reg
+
+class Token:
+    tokenType:str
+    lexeme: str # the field name of token in tokenDict
+    literal: str
+    lineNum: int
+
+    def __init__(self, t:str, lex:str, lit:str, ln:int):
+        self.tokenType = t
+        self.lexeme = lex
+        self.literal = lit
+        self.lineNum = ln
+
+    def tokenisedForm(self) -> str:
+        return (tokenType + " " + lexeme + " " + literal)
+
+class Scanner:
+    source :str # raw source code string
+    tokenss: Token = []
+
+    def addToken(self, token:Token):
+        self.tokenss.append(token)
 
 tokenDict = {
     '(': "LEFT_PAREN",
@@ -12,7 +35,11 @@ tokenDict = {
     '/': "SLASH",
     '-': "MINUS",
     ';': "SEMICOLON",
+    '=': "EQUAL",
+    '==': "EQUAL_EQUAL",
 }
+
+primaryScanner: Scanner
 
 hadError = False
 
@@ -24,17 +51,32 @@ def reportError(lineNum, char):
 def createTokens(filename: str):
     lineNum = 1
     with open(filename) as file:
-        for line in file:  # Process each line in the file
+        for line in file:
             words = line.split()
             wordLen = len(words)
             for i, word in enumerate(words):
-                for char in word:
-                    if char in tokenDict:
-                        print(f"{tokenDict[char]} {char} null")
+                j = 0
+                while j < len(word):
+                    char = word[j]
+                    next_char = word[j + 1] if j + 1 < len(word) else ''
+                    char_combo = char + next_char
+            
+                    if char_combo in tokenDict:
+                        newToken = Token(tokenDict[char_combo], char_combo, "null", lineNum)
+                        print(newToken.tokenisedForm())
+                        primaryScanner.addToken(newToken)
+                        j +=2
+                    elif char in tokenDict:
+                        newToken = Token(tokenDict[char], char, "null", lineNum)
+                        print(newToken.tokenisedForm())
+                        primaryScanner.addToken(newToken)
+                        j+=1
                     else:
                         reportError(lineNum, char)
-                if i < wordLen - 1:
-                    print("IDENTIFIER space null")
+                        j +=1
+            
+                    if j == len(word) - 1:  # If at the last character, print space identifier
+                        print("IDENTIFIER space null")
             lineNum += 1
     
     print("EOF  null")
