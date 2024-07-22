@@ -45,16 +45,19 @@ class Scanner:
             self.eoline()
         elif (char == '"'):
             strVal = "\""
+            endFound = False
             self.current+=1
-            while (self.isAtEnd()!=True and self.source[self.current] != '"'):
+            while (self.isAtEnd()==False and self.source[self.current] != '"'):
                 strVal += self.source[self.current]
                 if (self.source[self.current] == '\n'): self.lineNum +=1
                 self.current+=1
+                if (self.source[self.current]=='"'): endFound = True
             strVal += '\"'
-            if (self.isAtEnd()):
+            if (self.isAtEnd() and endFound==False):
                 self.reportError(self.lineNum, "Unterminated string.")
                 return
 
+            self.current+=1
             newToken = Token("STRING", strVal, strVal[1:-1], self.lineNum)
             self.addToken(newToken)
             print(newToken.tokenisedForm())         
