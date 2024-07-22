@@ -1,5 +1,4 @@
 import sys
-import regex as reg
 
 class Token:
     tokenType:str
