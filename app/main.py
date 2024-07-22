@@ -44,7 +44,7 @@ class Scanner:
         if (char_combo == '//'):
             self.eoline()
         elif self.isDigit(char):
-            c= self.source[self.current]
+            c= char
             numVal = ""
             while(self.isAtEnd()==False and  self.isDigit(c)):
                 numVal+=c
@@ -53,6 +53,9 @@ class Scanner:
             
             if (c=='.'):
                 if (self.isAtEnd()==False and self.isDigit(self.source[self.current+1]) ):
+                    numVal+=c
+                    self.current+=1
+                    c= self.source[self.current]
                     while(self.isAtEnd()==False and  self.isDigit(c)):
                         numVal+=c
                         self.current+=1
