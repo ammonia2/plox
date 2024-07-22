@@ -70,7 +70,7 @@ class Scanner:
         elif self.isAlpha(char):
             identifierVal = ""
             c = char
-            while (not self.isAtEnd() and  isAlphaNumeric(c)):
+            while (not self.isAtEnd() and  self.isAlphaNumeric(c)):
                 identifierVal+=c
                 self.current +=1
                 c = self.source[self.current] if (not self.isAtEnd()) else ''
