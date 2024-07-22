@@ -42,10 +42,13 @@ class Scanner:
         next_char = self.source[self.start+1] if (self.start+1 < len(self.source)) else ''
         char_combo = char +next_char
         if (char_combo in tokenDict):
-            newToken = Token(tokenDict[char_combo], char_combo, "null", self.lineNum)
-            print(newToken.tokenisedForm())
-            self.addToken(newToken)
-            self.current+=2
+            if (char_combo!= '//'):
+                newToken = Token(tokenDict[char_combo], char_combo, "null", self.lineNum)
+                print(newToken.tokenisedForm())
+                self.addToken(newToken)
+                self.current+=2
+            else:
+                self.eoline()
         elif char in tokenDict:
             newToken = Token(tokenDict[char], char, "null", self.lineNum)
             print(newToken.tokenisedForm())
@@ -54,6 +57,11 @@ class Scanner:
         else:
             self.reportError(self.lineNum, char)
             self.current+=1
+
+    def eoline(self):
+        while (self.source[self.current] != '/n'):
+            self.current+=1
+        # self.current +=1
 
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
@@ -71,7 +79,6 @@ tokenDict = {
     '.': "DOT",
     ',': "COMMA",
     '+': "PLUS",
-    '/': "SLASH",
     '-': "MINUS",
     ';': "SEMICOLON",
     '=': "EQUAL",
@@ -82,6 +89,7 @@ tokenDict = {
     '<=': "LESS_EQUAL",
     '>': "GREATER",
     '>=': "GREATER_EQUAL",
+    '/': "SLASH",
 }
 
 def main():
@@ -102,7 +110,6 @@ def main():
     with open(filename) as file:
         file_contents = file.read()
 
-    # Uncomment this block to pass the first stage
     scanner = Scanner(file_contents)
     if file_contents:
         scanner.createTokens()
