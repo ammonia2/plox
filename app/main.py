@@ -21,6 +21,7 @@ class Scanner:
     lineNum: int = 1
     start: int = 0
     current: int =0
+    hadError = False
 
     def __init__(self, content:str):
         self.source = content
@@ -51,11 +52,15 @@ class Scanner:
             self.addToken(newToken)
             self.current+=1
         else:
-            reportError(self.lineNum, char)
+            self.reportError(self.lineNum, char)
             self.current+=1
 
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
+
+    def reportError(self, lineNum, char):
+        self.hadError = True
+        print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
 tokenDict = {
     '(': "LEFT_PAREN",
@@ -78,13 +83,6 @@ tokenDict = {
     '>': "GREATER",
     '>=': "GREATER_EQUAL",
 }
-
-hadError = False
-
-def reportError(lineNum, char):
-    global hadError
-    hadError = True
-    print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -111,7 +109,7 @@ def main():
     else:
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
-    if (hadError):
+    if (scanner.hadError):
         exit(65)
 
 if __name__ == "__main__":
