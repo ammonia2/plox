@@ -52,7 +52,7 @@ class Scanner:
                 c = self.source[self.current] if (self.isAtEnd()==False) else ''
             
             while (c=='.'):
-                if (self.isAtEnd()==False and self.isDigit(self.source[self.current+1]) ):
+                if (self.current+1 < len(self.source) and self.isDigit(self.source[self.current+1]) ):
                     numVal+=c
                     self.current+=1
                     c= self.source[self.current]
