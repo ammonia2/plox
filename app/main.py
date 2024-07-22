@@ -36,6 +36,8 @@ tokenDict = {
     ';': "SEMICOLON",
     '=': "EQUAL",
     '==': "EQUAL_EQUAL",
+    '!': "BANG",
+    '!=': "BANG_EQUAL",
 }
 
 primaryScanner = Scanner()
