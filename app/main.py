@@ -75,8 +75,6 @@ def createTokens(filename: str):
                         reportError(lineNum, char)
                         j +=1
             
-                    if j == len(word) - 1:  # If at the last character, print space identifier
-                        print("IDENTIFIER space null")
             lineNum += 1
     
     print("EOF  null")
