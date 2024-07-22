@@ -47,7 +47,7 @@ class Scanner:
             self.current+=1
             c= self.source[self.current]
             numVal = ""
-            while(self.isDigit(c)):
+            while(self.isAtEnd()==False and  self.isDigit(c)):
                 numVal+=self.source[self.current]
                 self.current+=1
             
