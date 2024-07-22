@@ -75,8 +75,10 @@ class Scanner:
                 identifierVal+=c
                 self.current +=1
                 c = self.source[self.current] if (not self.isAtEnd()) else ''
-
-            newToken = Token("IDENTIFIER", identifierVal, "null", self.lineNum)
+            if keywords[identifierVal]:
+                newToken = Token(keywords[identifierVal], identifierVal, "null", self.lineNum)
+            else:
+                newToken = Token("IDENTIFIER", identifierVal, "null", self.lineNum)
             print(newToken.tokenisedForm())
             self.addToken(newToken)
         elif (char == '"'):
