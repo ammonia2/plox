@@ -43,6 +43,27 @@ class Scanner:
         char_combo = char +next_char
         if (char_combo == '//'):
             self.eoline()
+        elif self.isDigit(char):
+            self.current+=1
+            c= self.source[self.current]
+            numVal = ""
+            while(self.isDigit(c)):
+                numVal+=self.source[self.current]
+                self.current+=1
+            
+            if (self.source[self.current]=='.'):
+                if (self.isAtEnd()==False and self.isDigit(self.source[self.current+1]) ):
+                    while(self.isDigit(c)):
+                        numVal+=self.source[self.current]
+                        self.current+=1
+                else:
+                    self.reportError(self.lineNum, "Unexpected character", self.source[self.current])
+
+            self.current+=1
+            newToken = Token("NUMBER", numVal, numVal, self.lineNum)
+            self.addToken(newToken)
+            print(newToken.tokenisedForm())
+
         elif (char == '"'):
             strVal = "\""
             endFound = False
@@ -82,6 +103,9 @@ class Scanner:
     def eoline(self):
         while (self.isAtEnd()!=True and self.source[self.current] != '\n'):
             self.current+=1
+
+    def isDigit(self, c) -> bool:
+        return (c >= '0' and c <= '9')
 
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
