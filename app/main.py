@@ -33,12 +33,12 @@ class Scanner:
             self.start = self.current
             self.scanToken()
 
-        tokenss.append(Token("EOF", "", null, lineNum))
+        self.tokenss.append(Token("EOF", "", null, lineNum))
         print("EOF  null")
 
     def scanToken(self):
-        char = source[self.start]
-        next_char = source[self.start+1] if (self.start+1 <= len(source)) else ''
+        char = self.source[self.start]
+        next_char = self.source[self.start+1] if (self.start+1 <= len(self.source)) else ''
         char_combo = char +next_char
         if (char_combo in tokenDict):
             newToken = Token(tokenDict[char_combo], char_combo, "null", lineNum)
@@ -55,7 +55,7 @@ class Scanner:
             j +=1
 
     def isAtEnd(self) -> bool:
-        return (self.current >= len(source))
+        return (self.current >= len(self.source))
 
 tokenDict = {
     '(': "LEFT_PAREN",
