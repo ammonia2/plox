@@ -38,7 +38,7 @@ tokenDict = {
     '==': "EQUAL_EQUAL",
 }
 
-primaryScanner: Scanner
+primaryScanner = Scanner()
 
 hadError = False
 
