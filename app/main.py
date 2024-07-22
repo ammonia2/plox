@@ -62,6 +62,7 @@ class Scanner:
                         c = self.source[self.current] if (self.isAtEnd()==False) else ''
                 else:
                     self.reportError(self.lineNum, "Unexpected character", self.source[self.current])
+                    self.current+=1
 
             self.current+=1
             newToken = Token("NUMBER", numVal, numVal, self.lineNum)
