@@ -51,11 +51,12 @@ class Scanner:
                 self.current+=1
                 c = self.source[self.current]
             
-            if (self.source[self.current]=='.'):
+            if (c=='.'):
                 if (self.isAtEnd()==False and self.isDigit(self.source[self.current+1]) ):
-                    while(self.isDigit(c)):
-                        numVal+=self.source[self.current]
+                    while(self.isAtEnd()==False and  self.isDigit(c)):
+                        numVal+=c
                         self.current+=1
+                        c = self.source[self.current]
                 else:
                     self.reportError(self.lineNum, "Unexpected character", self.source[self.current])
 
