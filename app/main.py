@@ -13,7 +13,7 @@ class Token:
         self.lineNum = ln
 
     def tokenisedForm(self) -> str:
-        return (tokenType + " " + lexeme + " " + literal)
+        return (self.tokenType + " " + self.lexeme + " " + self.literal)
 
 class Scanner:
     source :str # raw source code string
