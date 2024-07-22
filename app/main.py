@@ -61,7 +61,7 @@ class Scanner:
                         self.current+=1
                         c = self.source[self.current] if (self.isAtEnd()==False) else ''
                 else:
-                    self.reportError(self.lineNum, "Unexpected character", self.source[self.current])
+                    self.reportError(self.lineNum, "Unexpected character", c)
                     self.current+=1
 
             self.current+=1
