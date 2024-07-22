@@ -53,7 +53,7 @@ class Scanner:
             print(newToken.tokenisedForm())
             self.addToken(newToken)
             self.current+=1
-        else:
+        elif (char!=' '):
             self.reportError(self.lineNum, char)
             self.current+=1
 
