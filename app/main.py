@@ -101,7 +101,6 @@ def main():
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
 
-    file_contents= null
     with open(filename) as file:
         file_contents = file.read()
 
