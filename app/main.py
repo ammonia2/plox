@@ -55,7 +55,7 @@ class Scanner:
             j +=1
 
     def isAtEnd(self) -> bool:
-        return (self.current >= source.length())
+        return (self.current >= len(source))
 
 tokenDict = {
     '(': "LEFT_PAREN",
