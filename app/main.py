@@ -18,9 +18,44 @@ class Token:
 class Scanner:
     source :str # raw source code string
     tokenss: Token = []
+    lineNum: int = 1
+    start: int = 0
+    current: int =0
+
+    def __init__(self, content:str):
+        self.source = content
 
     def addToken(self, token:Token):
         self.tokenss.append(token)
+
+    def createTokens(self):
+        while (self.isAtEnd() != True):
+            self.start = self.current
+            self.scanToken()
+
+        tokenss.append(Token("EOF", "", null, lineNum))
+        print("EOF  null")
+
+    def scanToken(self):
+        char = source[self.start]
+        next_char = source[self.start+1] if (self.start+1 <= len(source)) else ''
+        char_combo = char +next_char
+        if (char_combo in tokenDict):
+            newToken = Token(tokenDict[char_combo], char_combo, "null", lineNum)
+            print(newToken.tokenisedForm())
+            self.addToken(newToken)
+            self.current+=2
+        elif char in tokenDict:
+            newToken = Token(tokenDict[char], char, "null", lineNum)
+            print(newToken.tokenisedForm())
+            self.addToken(newToken)
+            self.current+=1
+        else:
+            reportError(lineNum, char)
+            j +=1
+
+    def isAtEnd(self) -> bool:
+        return (self.current >= source.length())
 
 tokenDict = {
     '(': "LEFT_PAREN",
@@ -38,6 +73,10 @@ tokenDict = {
     '==': "EQUAL_EQUAL",
     '!': "BANG",
     '!=': "BANG_EQUAL",
+    '<': "LESS",
+    '<=': "LESS_EQUAL",
+    '>': "GREATER",
+    '>=': "GREATER_EQUAL",
 }
 
 primaryScanner = Scanner()
@@ -48,38 +87,6 @@ def reportError(lineNum, char):
     global hadError
     hadError = True
     print(f"[line {lineNum}] Error: Unexpected character: {char}", file=sys.stderr)
-
-def createTokens(filename: str):
-    global primaryScanner, tokenDict
-    lineNum = 1
-    with open(filename) as file:
-        for line in file:
-            words = line.split()
-            wordLen = len(words)
-            for i, word in enumerate(words):
-                j = 0
-                while j < len(word):
-                    char = word[j]
-                    next_char = word[j + 1] if j + 1 < len(word) else ''
-                    char_combo = char + next_char
-            
-                    if char_combo in tokenDict:
-                        newToken = Token(tokenDict[char_combo], char_combo, "null", lineNum)
-                        print(newToken.tokenisedForm())
-                        primaryScanner.addToken(newToken)
-                        j +=2
-                    elif char in tokenDict:
-                        newToken = Token(tokenDict[char], char, "null", lineNum)
-                        print(newToken.tokenisedForm())
-                        primaryScanner.addToken(newToken)
-                        j+=1
-                    else:
-                        reportError(lineNum, char)
-                        j +=1
-            
-            lineNum += 1
-    
-    print("EOF  null")
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -96,12 +103,14 @@ def main():
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
 
+    file_contents= null
     with open(filename) as file:
         file_contents = file.read()
 
     # Uncomment this block to pass the first stage
     if file_contents:
-        createTokens(filename)
+        scanner = Scanner(file_contents)
+        scanner.createTokens()
     else:
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
