@@ -63,7 +63,6 @@ class Scanner:
     def eoline(self):
         while (self.current < len(self.source) and self.source[self.current] != '\n'):
             self.current+=1
-        self.lineNum +=1
 
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
