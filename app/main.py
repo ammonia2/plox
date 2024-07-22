@@ -47,15 +47,15 @@ class Scanner:
             strVal = "\""
             self.current+=1
             while (self.isAtEnd()!=True and self.source[self.current] != '"'):
-                stringVal += self.source[self.current]
+                strVal += self.source[self.current]
                 if (self.source[self.current] == '\n'): self.lineNum +=1
                 self.current+=1
-            stringVal += '\"'
+            strVal += '\"'
             if (self.isAtEnd()):
                 self.reportError(self.lineNum, "Unterminated string.")
                 return
 
-            newToken = Token("STRING", stringVal, stringVal[1:-1], self.lineNum)
+            newToken = Token("STRING", strVal, strVal[1:-1], self.lineNum)
             self.addToken(newToken)
             print(newToken.tokenisedForm())         
 
