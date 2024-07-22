@@ -58,7 +58,7 @@ class Scanner:
             self.current+=1
 
     def eoline(self):
-        while (self.source[self.current] != '/n'):
+        while (self.source[self.current] != '/n' and self.current < len(self.source)):
             self.current+=1
         # self.current +=1
 
