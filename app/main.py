@@ -53,14 +53,14 @@ class Scanner:
             print(newToken.tokenisedForm())
             self.addToken(newToken)
             self.current+=1
-        elif char==' ' or char == '/n' or char == '/t':
+        elif char==' ' or char == '\n' or char == '\t':
             self.current+=1
         else:
             self.reportError(self.lineNum, char)
             self.current+=1
 
     def eoline(self):
-        while (self.current < len(self.source) and self.source[self.current] != '/n'):
+        while (self.current < len(self.source) and self.source[self.current] != '\n'):
             self.current+=1
         # self.current +=1
 
