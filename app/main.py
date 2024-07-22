@@ -57,12 +57,13 @@ class Scanner:
                 c= self.source[self.current]
                 while(self.isAtEnd()==False and  self.isDigit(c)):
                     numVal+=c
-                    c = self.source[self.current+1] if (self.current+1<len(self.source)) else ''
+                    self.current+=1
+                    c = self.source[self.current] if (self.isAtEnd()==False) else ''
             else:
                 numVal += '.0'
 
             # while (not self.isAtEnd() and  ( self.isDigit(self.source[self.current]) or self.source[self.current]=='.' )):
-            self.current+=1
+            # self.current+=1
             newToken = Token("NUMBER", numVal, numVal, self.lineNum)
             self.addToken(newToken)
             print(newToken.tokenisedForm())
