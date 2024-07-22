@@ -52,7 +52,7 @@ class Scanner:
             self.current+=1
         else:
             reportError(self.lineNum, char)
-            j +=1
+            self.current+=1
 
     def isAtEnd(self) -> bool:
         return (self.current >= len(self.source))
