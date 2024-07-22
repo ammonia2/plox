@@ -103,10 +103,11 @@ def main():
         file_contents = file.read()
 
     # Uncomment this block to pass the first stage
+    scanner = Scanner(file_contents)
     if file_contents:
-        scanner = Scanner(file_contents)
         scanner.createTokens()
     else:
+        scanner.addToken(Token("EOF", "", "null", 1))
         print("EOF  null") # Placeholder, remove this line when implementing the scanner
 
     if (scanner.hadError):
