@@ -1,6 +1,6 @@
 import sys
-from tokeniser import Token
-from parser import Parser
+from app.tokeniser import Token
+from app.parser import Parser
 
 def Binary(left, operator, right):
     return {"left": left, "operator": operator, "right": right}
