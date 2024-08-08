@@ -1,20 +1,20 @@
 import sys
-import re
+from tokeniser import Token
+from parser import Parser
 
-class Token:
-    tokenType:str
-    lexeme: str # the field name of token in tokenDict
-    literal: str
-    lineNum: int
+def Binary(left, operator, right):
+    return {"left": left, "operator": operator, "right": right}
 
-    def __init__(self, t:str, lex:str, lit:str, ln:int):
-        self.tokenType = t
-        self.lexeme = lex
-        self.literal = lit
-        self.lineNum = ln
+def Grouping(expression):
+    return {"expression": expression}
 
-    def tokenisedForm(self) -> str:
-        return (self.tokenType + " " + self.lexeme + " " + self.literal)
+def Literal(val):
+    if val is None:
+        return "nil"
+    return str(val).lower()
+    
+def Unary(operator, right):
+    return {"operator": operator, "right": right}
 
 class Scanner:
     source :str # raw source code string
@@ -186,13 +186,15 @@ def main():
     # print("Logs from your program will appear here!", file=sys.stderr)
 
     if len(sys.argv) < 3:
-        print("Usage: ./your_program.sh tokenize <filename>", file=sys.stderr)
+        print("Usage: ./your_program.sh \"command\" <filename>", file=sys.stderr)
         exit(1)
 
-    command = sys.argv[1]
-    filename = sys.argv[2]
+    command: str = sys.argv[1]
+    filename: str = sys.argv[2]
 
-    if command != "tokenize":
+    commands = ["parse", "tokenize"]
+
+    if command not in commands:
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
 
@@ -200,11 +202,15 @@ def main():
         file_contents = file.read()
 
     scanner = Scanner(file_contents)
-    if file_contents:
+    if command == "tokenize":
+        if file_contents:
+            scanner.createTokens()
+        else:
+            scanner.addToken(Token("EOF", "", "null", 1))
+            print("EOF  null") # Placeholder, remove this line when implementing the scanner
+    elif command== "parse":
         scanner.createTokens()
-    else:
-        scanner.addToken(Token("EOF", "", "null", 1))
-        print("EOF  null") # Placeholder, remove this line when implementing the scanner
+        parser = Parser(scanner.tokenss)
 
     if (scanner.hadError):
         exit(65)
