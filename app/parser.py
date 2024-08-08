@@ -1,4 +1,4 @@
-from tokeniser import Token
+from app.tokeniser import Token
 
 class Parser:
     tokenss: Token = []
