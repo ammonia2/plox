@@ -12,7 +12,7 @@ def Literal(val):
     return str(val).lower()
     
 def Unary(operator, right):
-    return f"({operator}, {right})"
+    return f"({operator} {right})"
 
 class Parser:
     tokenss: Token = []
