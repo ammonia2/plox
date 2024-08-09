@@ -18,9 +18,8 @@ def Unary(operator, right):
 class Parser:
     tokenss: Token = []
     curr: int = 0
-    outStr: str = ""
-    openingB: int=0
-    closingB: int=0
+    # openingB: int=0
+    # closingB: int=0
     hadError = False
 
     def __init__(self, toka: Token):
@@ -36,12 +35,11 @@ class Parser:
         elif self.isStr(currToken):
             return currToken.literal
         elif self.isBracket(currToken)==1:
-            self.openingB +=1
+            self.curr +=1
             expr = self.expression()
-            self.findEndingB()
-            if (self.openingB != self.closingB):
-                print("Expected closing parantheses )", file=sys.stderr)
-                self.hadError = True
+            if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
+                self.curr += 1
+            else: self.hadError= True
             return Grouping(expr)
         
     def expression(self):
@@ -76,20 +74,10 @@ class Parser:
         self.curr +=1 if (not self.isAtEnd()) else 0
         return self.parse_token(token)
 
-    def findEndingB(self):
-        currToken = self.tokenss[self.curr]
-        if (currToken=="RIGHT_PAREN"):
-            self.closingB +=1
-            self.curr +=1 if not self.isAtEnd() else 0
-            return currToken
-
     def parse(self):
-        while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
-            currToken = self.tokenss[self.curr]
-            self.parse_token(currToken)
-            if (self.openingB == self.closingB and not self.hadError):
-                print(self.outStr)
-                self.outStr = ""
+        expr = self.expression()
+        if not self.hadError:
+            print(expr)
 
     def isBracket(self, token) -> int:
         if token.tokenType=="LEFT_PAREN": return 1
