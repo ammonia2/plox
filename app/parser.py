@@ -79,7 +79,8 @@ class Parser:
     def literal(self):
         pass
 
-    def unary(self, token):
+    def unary(self):
+        token = self.tokenss[self.curr]
         if token.tokenType == "BANG" or token.tokenType == "MINUS":
             operator = token.lexeme
             right = self.unary()
