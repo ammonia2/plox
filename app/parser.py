@@ -13,8 +13,8 @@ class Parser:
             return currToken.lexeme
         elif self.isNil(currToken):
             return currToken.lexeme
-        # else:
-        #     return "error"
+        elif self.isNum(currToken):
+            return currToken.lexeme
 
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
@@ -43,11 +43,21 @@ class Parser:
     def unary(self):
         pass
 
-    def isBool(self, token):
+    def isBool(self, token) -> bool:
         return (token.tokenType=="TRUE" or token.tokenType == "FALSE")
 
-    def isNil(self, token):
+    def isNil(self, token) -> bool:
         return token.tokenType=="NIL"
 
-    def isAtEnd(self):
+    def isFloat(token_literal: str) -> bool:
+        try:
+            float(token_literal)
+            return True
+        except ValueError:
+            return False
+    
+    def isNum(self, token) -> bool:
+        return isFloat(token.literal)
+
+    def isAtEnd(self) -> bool:
         return self.curr >= len(self.tokenss)
