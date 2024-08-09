@@ -23,6 +23,7 @@ class Scanner:
     start: int = 0
     current: int =0
     hadError = False
+    command
 
     def __init__(self, content:str):
         self.source = content
@@ -30,7 +31,8 @@ class Scanner:
     def addToken(self, token:Token):
         self.tokenss.append(token)
 
-    def createTokens(self):
+    def createTokens(self, cmd):
+        self.command = cmd
         while (self.isAtEnd() != True):
             self.start = self.current
             self.scanToken()
@@ -67,7 +69,8 @@ class Scanner:
 
             newToken = Token("NUMBER", numVal if (not floatAdded) else numVal[:-2], str(float(numVal)), self.lineNum)
             self.addToken(newToken)
-            print(newToken.tokenisedForm())
+            if (self.command == "tokenize"):
+                print(newToken.tokenisedForm())
         elif self.isAlpha(char):
             identifierVal = ""
             c = char
@@ -79,7 +82,9 @@ class Scanner:
                 newToken = Token(keywords[identifierVal], identifierVal, "null", self.lineNum)
             else:
                 newToken = Token("IDENTIFIER", identifierVal, "null", self.lineNum)
-            print(newToken.tokenisedForm())
+            
+            if (self.command == "tokenize"):
+                print(newToken.tokenisedForm())
             self.addToken(newToken)
         elif (char == '"'):
             strVal = "\""
@@ -98,16 +103,19 @@ class Scanner:
             self.current+=1
             newToken = Token("STRING", strVal, strVal[1:-1], self.lineNum)
             self.addToken(newToken)
-            print(newToken.tokenisedForm())         
+            if (self.command == "tokenize"):
+                print(newToken.tokenisedForm())        
 
         elif (char_combo in tokenDict):
             newToken = Token(tokenDict[char_combo], char_combo, "null", self.lineNum)
-            print(newToken.tokenisedForm())
+            if (self.command == "tokenize"):
+                print(newToken.tokenisedForm())
             self.addToken(newToken)
             self.current+=2
         elif char in tokenDict:
             newToken = Token(tokenDict[char], char, "null", self.lineNum)
-            print(newToken.tokenisedForm())
+            if (self.command == "tokenize"):
+                print(newToken.tokenisedForm())
             self.addToken(newToken)
             self.current+=1
         elif char==' ' or char == '\n' or char == '\t':
@@ -204,13 +212,14 @@ def main():
     scanner = Scanner(file_contents)
     if command == "tokenize":
         if file_contents:
-            scanner.createTokens()
+            scanner.createTokens(command)
         else:
             scanner.addToken(Token("EOF", "", "null", 1))
             print("EOF  null") # Placeholder, remove this line when implementing the scanner
     elif command== "parse":
-        scanner.createTokens()
+        scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
+        parser.parse()
 
     if (scanner.hadError):
         exit(65)
