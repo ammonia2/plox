@@ -52,4 +52,4 @@ class Parser:
         return token.tokenType=="NIL"
 
     def isAtEnd(self):
-        return self.curr < len(self.tokenss)
+        return self.curr >= len(self.tokenss)
