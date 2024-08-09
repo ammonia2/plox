@@ -38,7 +38,8 @@ class Scanner:
             self.scanToken()
 
         self.tokenss.append(Token("EOF", "", "null", self.lineNum))
-        print("EOF  null")
+        if self.command == "tokenize":    
+            print("EOF  null")
 
     def scanToken(self):
         char = self.source[self.start]
