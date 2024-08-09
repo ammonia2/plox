@@ -15,6 +15,8 @@ class Parser:
             return currToken.lexeme
         elif self.isNum(currToken):
             return currToken.literal
+        elif self.isStr(currToken):
+            return currToken.literal
 
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
@@ -48,16 +50,12 @@ class Parser:
 
     def isNil(self, token) -> bool:
         return token.tokenType=="NIL"
-
-    def isFloat(self, token_literal: str) -> bool:
-        try:
-            float(token_literal)
-            return True
-        except ValueError:
-            return False
     
     def isNum(self, token) -> bool:
-        return self.isFloat(token.literal)
+        return token.tokenType == "NUMBER"
+
+    def isStr(self, token) -> bool:
+        return token.tokenType == "STRING"
 
     def isAtEnd(self) -> bool:
         return self.curr >= len(self.tokenss)
