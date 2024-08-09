@@ -205,7 +205,7 @@ def main():
     elif command== "parse":
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
-        parser.expression()
+        print(parser.expression())
         if parser.hadError: 
             exit(65)
 
