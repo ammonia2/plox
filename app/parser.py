@@ -2,7 +2,7 @@ import sys
 from app.tokeniser import Token
 
 def Binary(left, operator, right):
-    return {"left": left, "operator": operator, "right": right}
+    return f"({operator} {left} {right})"
 
 def Grouping(expression):
     return f"(group {expression})"
@@ -18,8 +18,6 @@ def Unary(operator, right):
 class Parser:
     tokenss: Token = []
     curr: int = 0
-    # openingB: int=0
-    # closingB: int=0
     hadError = False
 
     def __init__(self, toka: Token):
@@ -58,7 +56,13 @@ class Parser:
         return self.factor()
 
     def factor(self):
-        return self.unary()
+        expr= self.unary()
+        token = self.tokenss[self.curr]
+        while token.tokenType=="STAR" or token.tokenType =="SLASH":
+            operator = token.lexeme
+            right = self.unary()
+            expr = Binary(expr, operator, right)
+        return expr
 
     def binary(self):
         pass
