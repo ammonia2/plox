@@ -48,7 +48,7 @@ class Parser:
 
     def equality(self):
         expr= self.comparison()
-        token = self.tokenss[self.curr]
+        token = self.tokenss[self.curr] if not self.isAtEnd() else None
         while token.tokenType=="BANG_EQUAL" or token.tokenType=="EQUAL_EQUAL":
             operator = token.lexeme
             self.curr+=1
@@ -59,7 +59,7 @@ class Parser:
 
     def comparison(self):
         expr= self.term()
-        token = self.tokenss[self.curr]
+        token = self.tokenss[self.curr] if not self.isAtEnd() else None
         while token.tokenType=="GREATER" or token.tokenType=="GREATER_EQUAL" or token.tokenType =="LESS" or token.tokenType=="LESS_EQUAL":
             operator = token.lexeme
             self.curr+=1
@@ -70,7 +70,7 @@ class Parser:
 
     def term(self):
         expr= self.factor()
-        token = self.tokenss[self.curr]
+        token = self.tokenss[self.curr] if not self.isAtEnd() else None
         while token.tokenType=="MINUS" or token.tokenType =="PLUS":
             operator = token.lexeme
             self.curr+=1
@@ -81,7 +81,7 @@ class Parser:
 
     def factor(self):
         expr= self.unary()
-        token = self.tokenss[self.curr]
+        token = self.tokenss[self.curr] if not self.isAtEnd() else None
         while token.tokenType=="STAR" or token.tokenType =="SLASH":
             operator = token.lexeme
             self.curr+=1
