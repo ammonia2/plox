@@ -37,6 +37,7 @@ class Parser:
         elif self.isBracket(currToken)==1:
             if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
                 self.curr += 1
+                self.hadError=True
                 return Grouping("")
             expr = self.expression()
             if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
