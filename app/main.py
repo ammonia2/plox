@@ -220,6 +220,8 @@ def main():
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
         parser.parse()
+        if parser.hadError: 
+            exit(65)
 
     if (scanner.hadError):
         exit(65)
