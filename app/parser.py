@@ -35,11 +35,10 @@ class Parser:
             return currToken.literal
         elif self.isStr(currToken):
             return currToken.literal
-        elif self.isBracket(currToken)>0:
-            if (self.isBracket(currToken)==1):
-                expr = self.expression()
-                self.findEndingB("Expect ')' after expression.")
-                return Grouping(expr)
+        elif self.isBracket(currToken)==1:
+            expr = self.expression()
+            self.findEndingB("Expect ')' after expression.")
+            return Grouping(expr)
         
     def expression(self):
         return self.equality() 
@@ -55,22 +54,6 @@ class Parser:
 
     def factor(self):
         return self.unary()
-
-    def findEndingB(self, msg):
-        currToken = self.tokenss[self.curr]
-        if (currToken=="RIGHT_PAREN"):
-            self.curr +=1 if not self.isAtEnd() else 0
-            return currToken
-        print(msg, file=sys.stderr)
-        self.hadError = True
-
-    def parse(self):
-        while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
-            currToken = self.tokenss[self.curr]
-            self.parse_token(currToken)
-            if (self.openingB == self.closingB and not self.hadError):
-                print(self.outStr)
-                self.outStr = ""
 
     def binary(self):
         pass
@@ -88,6 +71,22 @@ class Parser:
 
         self.curr +=1 if (not self.isAtEnd()) else 0
         return self.parse_token(token)
+
+    def findEndingB(self, msg):
+        currToken = self.tokenss[self.curr]
+        if (currToken=="RIGHT_PAREN"):
+            self.curr +=1 if not self.isAtEnd() else 0
+            return currToken
+        print(msg, file=sys.stderr)
+        self.hadError = True
+
+    def parse(self):
+        while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
+            currToken = self.tokenss[self.curr]
+            self.parse_token(currToken)
+            if (self.openingB == self.closingB and not self.hadError):
+                print(self.outStr)
+                self.outStr = ""
 
     def isBracket(self, token) -> int:
         if token.tokenType=="LEFT_PAREN": return 1
