@@ -13,17 +13,16 @@ class Parser:
             return currToken.lexeme
         elif self.isNil(currToken):
             return currToken.lexeme
-        else:
-            return "error"
+        # else:
+        #     return "error"
 
     def parse(self):
-        print(self.tokenss)
-        currToken = self.tokenss[self.curr].tokenType
+        currToken = self.tokenss[self.curr]
         print(currToken)
         while(currToken!="EOF"):
             print(self.parse_token(currToken))
             self.curr +=1
-            currToken = self.tokenss[self.curr].tokenType
+            currToken = self.tokenss[self.curr]
 
     def equality(self):
         pass
@@ -48,3 +47,6 @@ class Parser:
 
     def isBool(self, token):
         return (token.tokenType=="TRUE" or token.tokenType == "FALSE")
+
+    def isNil(self, token):
+        return token.tokenType=="nil"
