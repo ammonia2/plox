@@ -40,8 +40,6 @@ class Parser:
                 self.findEndingB("Expect ')' after expression.")
                 return Grouping(expr)
         
-        self.curr += 1
-
     def expression(self):
         return self.equality() 
 
@@ -87,6 +85,7 @@ class Parser:
             right = self.unary()
             return Unary(operator, right)
 
+        self.curr +=1 if (not self.isAtEnd()) else 0
         return self.parse_token(token)
 
     def isBracket(self, token) -> int:
