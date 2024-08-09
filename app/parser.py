@@ -18,7 +18,6 @@ class Parser:
 
     def parse(self):
         currToken = self.tokenss[self.curr]
-        print(currToken)
         while(not self.isAtEnd() and currToken!="EOF"):
             print(self.parse_token(currToken))
             self.curr +=1 if not self.isAtEnd() else 0
