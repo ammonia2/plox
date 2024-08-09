@@ -134,4 +134,4 @@ class Parser:
 
     def reportError(self, token):
         self.hadError = True
-        print (f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.")
+        print (f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.", file=sys.stderr)
