@@ -49,7 +49,7 @@ class Parser:
     def isNil(self, token) -> bool:
         return token.tokenType=="NIL"
 
-    def isFloat(token_literal: str) -> bool:
+    def isFloat(self, token_literal: str) -> bool:
         try:
             float(token_literal)
             return True
@@ -57,7 +57,7 @@ class Parser:
             return False
     
     def isNum(self, token) -> bool:
-        return isFloat(token.literal)
+        return self.isFloat(token.literal)
 
     def isAtEnd(self) -> bool:
         return self.curr >= len(self.tokenss)
