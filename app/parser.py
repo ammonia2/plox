@@ -25,6 +25,8 @@ class Parser:
             if (self.isBracket(currToken)==1):
                 self.openingB+=1
                 self.outStr+= currToken.lexeme + "group "
+                if (self.tokenss[self.curr+1] and self.isBracket(self.tokenss[self.curr])):
+                    self.hadError = True
             elif (self.isBracket(currToken)==2):
                 self.closingB += 1
                 self.outStr+= currToken.lexeme
