@@ -1,9 +1,22 @@
 from app.tokeniser import Token
 
+def Binary(left, operator, right):
+    return {"left": left, "operator": operator, "right": right}
+
+def Grouping(expression):
+    return f"(group {expression})"
+
+def Literal(val):
+    if val is None:
+        return "nil"
+    return str(val).lower()
+    
+def Unary(operator, right):
+    return f"({operator}, {right})"
+
 class Parser:
     tokenss: Token = []
     curr: int = 0
-    start: int = 0
     outStr: str = ""
     openingB: int=0
     closingB: int=0
@@ -14,22 +27,43 @@ class Parser:
         
     def parse_token(self, currToken):
         if self.isBool(currToken):
-            self.outStr+= currToken.lexeme
+            return currToken.lexeme
         elif self.isNil(currToken):
-            self.outStr+= currToken.lexeme
+            return currToken.lexeme
         elif self.isNum(currToken):
-            self.outStr+= currToken.literal
+            return currToken.literal
         elif self.isStr(currToken):
-            self.outStr+= currToken.literal
+            return currToken.literal
         elif self.isBracket(currToken)>0:
             if (self.isBracket(currToken)==1):
-                self.openingB+=1
-                self.outStr+= currToken.lexeme + "group "
-                if (self.tokenss[self.curr+1] and self.isBracket(self.tokenss[self.curr+1])==2):
-                    self.hadError = True
-            elif (self.isBracket(currToken)==2):
-                self.closingB += 1
-                self.outStr+= currToken.lexeme
+                expr = self.expression()
+                self.findEndingB("Expect ')' after expression.")
+                return Grouping(expr)
+        
+        self.curr += 1
+
+    def expression(self):
+        return self.equality()
+
+    def equality(self):
+        return self.comparison()
+
+    def comparison(self):
+        return self.term()
+
+    def term(self):
+        return self.factor()
+
+    def factor(self):
+        return self.unary()
+
+    def findEndingB(self, msg):
+        currToken = self.tokenss[self.curr]
+        if (currToken=="RIGHT_PAREN"):
+            self.curr +=1 if not self.isAtEnd() else 0
+            return currToken
+        print(msg, file=sys.stderr)
+        self.hadError = True
 
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
@@ -38,31 +72,20 @@ class Parser:
             if (self.openingB == self.closingB and not self.hadError):
                 print(self.outStr)
                 self.outStr = ""
-            self.curr += 1
-
-        if (self.openingB != self.closingB):
-            self.hadError = True
-
-    def equality(self):
-        pass
-
-    def match(self):
-        pass
-
-    def check(self):
-        pass
 
     def binary(self):
-        pass
-
-    def grouping(self):
         pass
 
     def literal(self):
         pass
 
-    def unary(self):
-        pass
+    def unary(self, token):
+        if token.tokenType == "BANG" or token.tokenType == "MINUS":
+            operator = token.lexeme
+            right = self.unary()
+            return Unary(operator, right)
+
+        return parse_token(self.tokenss[self.curr])
 
     def isBracket(self, token) -> int:
         if token.tokenType=="LEFT_PAREN": return 1

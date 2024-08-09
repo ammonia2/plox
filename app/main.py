@@ -2,20 +2,6 @@ import sys
 from app.tokeniser import Token
 from app.parser import Parser
 
-def Binary(left, operator, right):
-    return {"left": left, "operator": operator, "right": right}
-
-def Grouping(expression):
-    return {"expression": expression}
-
-def Literal(val):
-    if val is None:
-        return "nil"
-    return str(val).lower()
-    
-def Unary(operator, right):
-    return {"operator": operator, "right": right}
-
 class Scanner:
     source :str # raw source code string
     tokenss: Token = []
@@ -219,7 +205,7 @@ def main():
     elif command== "parse":
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
-        parser.parse()
+        parser.expression()
         if parser.hadError: 
             exit(65)
 
