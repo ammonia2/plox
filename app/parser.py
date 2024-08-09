@@ -53,7 +53,15 @@ class Parser:
         return self.term()
 
     def term(self):
-        return self.factor()
+        expr= self.factor()
+        token = self.tokenss[self.curr]
+        while token.tokenType=="MINUS" or token.tokenType =="PLUS":
+            operator = token.lexeme
+            self.curr+=1
+            right = self.unary()
+            token = self.tokenss[self.curr] if not self.isAtEnd() else None
+            expr = Binary(expr, operator, right)
+        return expr
 
     def factor(self):
         expr= self.unary()
