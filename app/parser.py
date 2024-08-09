@@ -80,7 +80,7 @@ class Parser:
     def parse(self):
         expr = self.expression()
         if not self.hadError:
-            if (expr is not None):
+            if (expr !="None"):
                 print(expr)
 
     def isBracket(self, token) -> int:
