@@ -56,6 +56,8 @@ class Parser:
         return self.factor()
 
     def factor(self):
+        for i in range(len(self.tokenss)):
+            print(self.tokenss[i].lexeme)
         expr= self.unary()
         token = self.tokenss[self.curr]
         while token.tokenType=="STAR" or token.tokenType =="SLASH":
