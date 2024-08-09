@@ -21,7 +21,7 @@ class Parser:
         print(currToken)
         while(currToken!="EOF"):
             print(self.parse_token(currToken))
-            self.curr +=1
+            self.curr +=1 if not self.isAtEnd() else 0
             currToken = self.tokenss[self.curr]
 
     def equality(self):
@@ -50,3 +50,6 @@ class Parser:
 
     def isNil(self, token):
         return token.tokenType=="nil"
+
+    def isAtEnd(self):
+        return self.curr < len(self.tokenss)
