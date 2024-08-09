@@ -17,6 +17,7 @@ class Parser:
             return "error"
 
     def parse(self):
+        print(self.tokenss)
         currToken = self.tokenss[self.curr].tokenType
         print(currToken)
         while(currToken!="EOF"):
