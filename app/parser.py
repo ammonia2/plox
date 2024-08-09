@@ -50,7 +50,15 @@ class Parser:
         return self.comparison() 
 
     def comparison(self):
-        return self.term()
+        expr= self.term()
+        token = self.tokenss[self.curr]
+        while token.tokenType=="GREATER" or token.tokenType=="GREATER_EQUAL" or token.tokenType =="LESS" or token.tokenType=="LESS_EQUAL":
+            operator = token.lexeme
+            self.curr+=1
+            right = self.term()
+            token = self.tokenss[self.curr] if not self.isAtEnd() else None
+            expr = Binary(expr, operator, right)
+        return expr
 
     def term(self):
         expr= self.factor()
