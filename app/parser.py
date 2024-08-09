@@ -38,7 +38,10 @@ class Parser:
         elif self.isBracket(currToken)==1:
             self.openingB +=1
             expr = self.expression()
-            self.findEndingB("Expect ')' after expression.")
+            self.findEndingB()
+            if (self.openingB != self.closingB):
+                print(msg, file=sys.stderr)
+                self.hadError = True
             return Grouping(expr)
         
     def expression(self):
@@ -73,16 +76,12 @@ class Parser:
         self.curr +=1 if (not self.isAtEnd()) else 0
         return self.parse_token(token)
 
-    def findEndingB(self, msg):
+    def findEndingB(self):
         currToken = self.tokenss[self.curr]
         if (currToken=="RIGHT_PAREN"):
             self.closingB +=1
             self.curr +=1 if not self.isAtEnd() else 0
             return currToken
-
-        if (self.openingB != self.closingB):
-            print(msg, file=sys.stderr)
-            self.hadError = True
 
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
