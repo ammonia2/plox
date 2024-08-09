@@ -41,7 +41,7 @@ class Parser:
                 self.hadError= True
                 return None
         
-        return None
+        self.reportError(currToken)
         
     def expression(self):
         return self.equality()
@@ -131,3 +131,7 @@ class Parser:
 
     def isAtEnd(self) -> bool:
         return self.curr >= len(self.tokenss)
+
+    def reportError(self, token):
+        self.hadError = True
+        print (f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.")
