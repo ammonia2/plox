@@ -83,6 +83,7 @@ class Parser:
         token = self.tokenss[self.curr]
         if token.tokenType == "BANG" or token.tokenType == "MINUS":
             operator = token.lexeme
+            self.curr +=1
             right = self.unary()
             return Unary(operator, right)
 
