@@ -1,3 +1,4 @@
+import sys
 from app.tokeniser import Token
 
 def Binary(left, operator, right):
