@@ -35,7 +35,7 @@ class Parser:
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
             currToken = self.tokenss[self.curr]
             self.parse_token(currToken)
-            if (self.openingB == self.closingB):
+            if (self.openingB == self.closingB and not self.hadError):
                 print(self.outStr)
                 self.outStr = ""
             self.curr += 1
