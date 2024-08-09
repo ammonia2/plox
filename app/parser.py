@@ -46,7 +46,7 @@ class Parser:
         return self.equality()
 
     def equality(self):
-        return self.comparison()
+        return self.comparison() 
 
     def comparison(self):
         return self.term()
