@@ -87,7 +87,7 @@ class Parser:
             right = self.unary()
             return Unary(operator, right)
 
-        return parse_token(self.tokenss[self.curr])
+        return self.parse_token(token)
 
     def isBracket(self, token) -> int:
         if token.tokenType=="LEFT_PAREN": return 1
