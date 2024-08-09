@@ -10,6 +10,7 @@ class Parser:
         
     def parse_token(self, currToken):
         if self.isBool(currToken):
+            print(currToken.lexeme)
             return currToken.lexeme
         elif self.isNil(currToken):
             return currToken.lexeme
