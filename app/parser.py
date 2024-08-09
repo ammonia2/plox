@@ -10,7 +10,6 @@ class Parser:
         
     def parse_token(self, currToken):
         if self.isBool(currToken):
-            print(currToken.lexeme)
             return currToken.lexeme
         elif self.isNil(currToken):
             return currToken.lexeme
@@ -20,7 +19,6 @@ class Parser:
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
             currToken = self.tokenss[self.curr]
-            print(currToken.tokenType)
             print(self.parse_token(currToken))
             self.curr += 1
 
