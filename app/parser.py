@@ -59,7 +59,6 @@ class Parser:
         expr= self.unary()
         token = self.tokenss[self.curr]
         while token.tokenType=="STAR" or token.tokenType =="SLASH":
-            print(token.lexeme)
             operator = token.lexeme
             self.curr+=1
             right = self.unary()
