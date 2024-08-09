@@ -43,7 +43,7 @@ class Parser:
         self.curr += 1
 
     def expression(self):
-        return self.equality()
+        return self.equality() 
 
     def equality(self):
         return self.comparison() 
