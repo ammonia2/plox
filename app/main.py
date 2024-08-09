@@ -83,7 +83,7 @@ class Scanner:
                 newToken = Token(keywords[identifierVal], identifierVal, "null", self.lineNum)
             else:
                 newToken = Token("IDENTIFIER", identifierVal, "null", self.lineNum)
-            
+            print(newToken)
             if (self.command == "tokenize"):
                 print(newToken.tokenisedForm())
             self.addToken(newToken)
