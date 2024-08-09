@@ -18,11 +18,10 @@ class Parser:
         #     return "error"
 
     def parse(self):
-        currToken = self.tokenss[self.curr]
-        while(currToken.tokenType!="EOF"):
-            print(self.parse_token(currToken))
-            self.curr +=1 if not self.isAtEnd() else 0
+        while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
             currToken = self.tokenss[self.curr]
+            print(self.parse_token(currToken))
+            self.curr += 1
 
     def equality(self):
         pass
