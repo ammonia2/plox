@@ -40,7 +40,7 @@ class Parser:
             expr = self.expression()
             self.findEndingB()
             if (self.openingB != self.closingB):
-                print(msg, file=sys.stderr)
+                print("Expected closing parantheses )", file=sys.stderr)
                 self.hadError = True
             return Grouping(expr)
         
