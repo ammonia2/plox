@@ -63,6 +63,7 @@ class Parser:
             operator = token.lexeme
             self.curr+=1
             right = self.unary()
+            token = self.tokenss[self.curr] if not self.isAtEnd() else None
             expr = Binary(expr, operator, right)
         return expr
 
