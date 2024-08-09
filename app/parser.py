@@ -20,6 +20,7 @@ class Parser:
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
             currToken = self.tokenss[self.curr]
+            print(currToken.tokenType)
             print(self.parse_token(currToken))
             self.curr += 1
 
@@ -48,7 +49,7 @@ class Parser:
         return (token.tokenType=="TRUE" or token.tokenType == "FALSE")
 
     def isNil(self, token):
-        return token.tokenType=="nil"
+        return token.tokenType=="NIL"
 
     def isAtEnd(self):
         return self.curr < len(self.tokenss)
