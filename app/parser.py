@@ -14,7 +14,7 @@ class Parser:
         elif self.isNil(currToken):
             return currToken.lexeme
         elif self.isNum(currToken):
-            return currToken.lexeme
+            return currToken.literal
 
     def parse(self):
         while not self.isAtEnd() and self.tokenss[self.curr].tokenType != "EOF":
