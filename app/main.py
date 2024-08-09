@@ -23,7 +23,7 @@ class Scanner:
     start: int = 0
     current: int =0
     hadError = False
-    command
+    command: str = ""
 
     def __init__(self, content:str):
         self.source = content
