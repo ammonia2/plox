@@ -44,10 +44,18 @@ class Parser:
         return None
         
     def expression(self):
-        return self.equality() 
+        return self.equality()
 
     def equality(self):
-        return self.comparison() 
+        expr= self.comparison()
+        token = self.tokenss[self.curr]
+        while token.tokenType=="BANG_EQUAL" or token.tokenType=="EQUAL_EQUAL":
+            operator = token.lexeme
+            self.curr+=1
+            right = self.comparison()
+            token = self.tokenss[self.curr] if not self.isAtEnd() else None
+            expr = Binary(expr, operator, right)
+        return expr
 
     def comparison(self):
         expr= self.term()
