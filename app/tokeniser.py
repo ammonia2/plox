@@ -11,4 +11,4 @@ class Token:
         self.lineNum = ln
 
     def tokenisedForm(self) -> str:
-        return (self.tokenType + " " + self.lexeme + " " + self.literal)
+        return (self.tokenType + " " + str(self.lexeme) + " " + str(self.literal))
