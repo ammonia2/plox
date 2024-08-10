@@ -1,6 +1,7 @@
 from app.visitor import Visitor, Binary, Grouping, Literal, Unary
 
 class Interpreter:
+    hadError = False
 
     def interpret(self, expr):
         if isinstance(expr, Literal):
@@ -9,7 +10,11 @@ class Interpreter:
             return self.interpret(expr.expression)
         elif isinstance(expr, Unary):
             if expr.operator == "-":
-                return -self.interpret(expr.right)
+                right = self.interpret(expr.right)
+                if isinstance(right, int) or isinstance(right, float):
+                    return -right
+                else:
+                    self.reportError()
             elif expr.operator == "!":
                 value = self.interpret(expr.right)
                 if value =="false" or value == "nil":
@@ -48,3 +53,8 @@ class Interpreter:
                 return "true" if left == right else "false"
             elif expr.operator == '!=':
                 return "true" if left != right else "false"
+
+    def reportError(self):
+        self.hadError = True
+        print("Operand must be a number.", file=sys.stderr)
+        exit(70)
