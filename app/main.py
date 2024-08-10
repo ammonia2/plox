@@ -2,6 +2,7 @@ import sys
 from app.tokeniser import Token
 from app.parser import Parser
 from app.scanner import Scanner
+from app.visitor import Visitor, PrintVisitor
 from app.interpreter import Interpreter
 
 def main():
@@ -37,7 +38,8 @@ def main():
         expr=parser.parse()
         if parser.hadError: 
             exit(65)
-        print(expr)
+        printer = PrintVisitor()
+        print(expr.accept(printer))
     elif command=="evaluate":
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)

@@ -1,19 +1,20 @@
 import sys
 from app.tokeniser import Token
+from app.visitor import Visitor, Binary, Grouping, Literal, Unary
 
-def Binary(left, operator, right):
-    return f"({operator} {left} {right})"
+# def Binary(left, operator, right):
+#     return f"({operator} {left} {right})"
 
-def Grouping(expression):
-    return f"(group {expression})"
+# def Grouping(expression):
+#     return f"(group {expression})"
 
-def Literal(val):
-    if val is None:
-        return "nil"
-    return str(val).lower()
+# def Literal(val):
+#     if val is None:
+#         return "nil"
+#     return str(val).lower()
     
-def Unary(operator, right):
-    return f"({operator} {right})"
+# def Unary(operator, right):
+#     return f"({operator} {right})"
 
 class Parser:
     tokenss: Token = []
@@ -25,20 +26,20 @@ class Parser:
         
     def parse_token(self, currToken):
         if self.isBool(currToken):
-            return currToken.lexeme
+            return Literal(currToken.lexeme)
         elif self.isNil(currToken):
-            return currToken.lexeme
+            return Literal(currToken.lexeme)
         elif self.isNum(currToken):
-            return currToken.literal
+            return Literal(currToken.literal)
         elif self.isStr(currToken):
-            return currToken.literal
-        elif self.isBracket(currToken)==1:
+            return Literal(currToken.literal)
+        elif self.isBracket(currToken) == 1:
             expr = self.expression()
-            if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN" and expr!="":
+            if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN" and expr != "":
                 self.curr += 1
                 return Grouping(expr)
             else: 
-                self.hadError= True
+                self.hadError = True
                 return None
         
         self.reportError(currToken)
@@ -47,64 +48,58 @@ class Parser:
         return self.equality()
 
     def equality(self):
-        expr= self.comparison()
+        expr = self.comparison()
         token = self.tokenss[self.curr] if not self.isAtEnd() else None
-        while token and (token.tokenType=="BANG_EQUAL" or token.tokenType=="EQUAL_EQUAL"):
+        while token and (token.tokenType == "BANG_EQUAL" or token.tokenType == "EQUAL_EQUAL"):
             operator = token.lexeme
-            self.curr+=1
+            self.curr += 1
             right = self.comparison()
             token = self.tokenss[self.curr] if not self.isAtEnd() else None
             expr = Binary(expr, operator, right)
         return expr
 
     def comparison(self):
-        expr= self.term()
+        expr = self.term()
         token = self.tokenss[self.curr] if not self.isAtEnd() else None
-        while token and (token.tokenType=="GREATER" or token.tokenType=="GREATER_EQUAL" or token.tokenType =="LESS" or token.tokenType=="LESS_EQUAL"):
+        while token and (token.tokenType == "GREATER" or token.tokenType == "GREATER_EQUAL" or token.tokenType == "LESS" or token.tokenType == "LESS_EQUAL"):
             operator = token.lexeme
-            self.curr+=1
+            self.curr += 1
             right = self.term()
             token = self.tokenss[self.curr] if not self.isAtEnd() else None
             expr = Binary(expr, operator, right)
         return expr
 
     def term(self):
-        expr= self.factor()
+        expr = self.factor()
         token = self.tokenss[self.curr] if not self.isAtEnd() else None
-        while token and ( token.tokenType=="MINUS" or token.tokenType =="PLUS"):
+        while token and (token.tokenType == "MINUS" or token.tokenType == "PLUS"):
             operator = token.lexeme
-            self.curr+=1
+            self.curr += 1
             right = self.unary()
             token = self.tokenss[self.curr] if not self.isAtEnd() else None
             expr = Binary(expr, operator, right)
         return expr
 
     def factor(self):
-        expr= self.unary()
+        expr = self.unary()
         token = self.tokenss[self.curr] if not self.isAtEnd() else None
-        while token and (token.tokenType=="STAR" or token.tokenType =="SLASH"):
+        while token and (token.tokenType == "STAR" or token.tokenType == "SLASH"):
             operator = token.lexeme
-            self.curr+=1
+            self.curr += 1
             right = self.unary()
             token = self.tokenss[self.curr] if not self.isAtEnd() else None
             expr = Binary(expr, operator, right)
         return expr
 
-    def binary(self):
-        pass
-
-    def literal(self):
-        pass
-
     def unary(self):
         token = self.tokenss[self.curr]
         if token.tokenType == "BANG" or token.tokenType == "MINUS":
             operator = token.lexeme
-            self.curr +=1
+            self.curr += 1
             right = self.unary()
             return Unary(operator, right)
 
-        self.curr +=1 if (not self.isAtEnd()) else 0
+        self.curr += 1 if not self.isAtEnd() else 0
         return self.parse_token(token)
 
     def parse(self):
@@ -114,15 +109,15 @@ class Parser:
         return None
 
     def isBracket(self, token) -> int:
-        if token.tokenType=="LEFT_PAREN": return 1
+        if token.tokenType == "LEFT_PAREN": return 1
         elif token.tokenType == "RIGHT_PAREN": return 2
         else: return 0
 
     def isBool(self, token) -> bool:
-        return (token.tokenType=="TRUE" or token.tokenType == "FALSE")
+        return token.tokenType == "TRUE" or token.tokenType == "FALSE"
 
     def isNil(self, token) -> bool:
-        return token.tokenType=="NIL"
+        return token.tokenType == "NIL"
     
     def isNum(self, token) -> bool:
         return token.tokenType == "NUMBER"
@@ -135,4 +130,4 @@ class Parser:
 
     def reportError(self, token):
         self.hadError = True
-        print (f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.", file=sys.stderr)
+        print(f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.", file=sys.stderr)
