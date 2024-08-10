@@ -15,7 +15,7 @@ class Interpreter:
                 if isinstance(right, int) or isinstance(right, float):
                     return -right
                 else:
-                    self.reportError()
+                    self.reportError("unary")
             elif expr.operator == "!":
                 value = self.interpret(expr.right)
                 if value =="false" or value == "nil":
