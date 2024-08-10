@@ -18,7 +18,7 @@ class Interpreter:
         elif isinstance(expr, Binary):
             left = self.interpret(expr.left)
             right = self.interpret(expr.right)
-            if expr.operaor=='-':
+            if expr.operator=='-':
                 return left - right
             elif expr.operator == '*':
                 return left * right
