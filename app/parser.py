@@ -17,13 +17,13 @@ class Parser:
         elif self.isNil(currToken):
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
-            if self.isStandaloneLiteral() and self.command != "parse":
-                try:
-                    return Literal(int(currToken.lexeme))
-                except ValueError:
-                    return Literal(float(currToken.lexeme))
-            else:
-                return Literal(currToken.literal)
+            # if self.isStandaloneLiteral() and self.command != "parse":
+            try:
+                return Literal(int(currToken.lexeme))
+            except ValueError:
+                return Literal(float(currToken.lexeme))
+            # else:
+            #     return Literal(currToken.literal)
         elif self.isStr(currToken):
             return Literal(currToken.literal)
         elif self.isBracket(currToken) == 1:
