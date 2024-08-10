@@ -18,7 +18,6 @@ class Parser:
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
             if self.command != "parse":
-                print(currToken.lexeme," ", currToken.literal, file=sys.stderr)
                 try:
                     if int(currToken.literal)==float(currToken.literal):
                         return Literal(int(currToken.literal))
