@@ -25,6 +25,8 @@ class Interpreter:
             left = self.interpret(expr.left)
             right = self.interpret(expr.right)
             if expr.operator=='-':
+                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+                    self.reportError("binary")
                 return left - right
             elif expr.operator == '*':
                 if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
@@ -44,8 +46,10 @@ class Interpreter:
             elif expr.operator == '+':
                 if (isinstance(left, int) and isinstance(right, int)) or (isinstance(left, float) and isinstance(right, float)):
                     return left + right
-                else:
+                elif (isinstance(left, str) and isinstance(right, str)):
                     return str(left) + str(right)
+                else:
+                    self.reportError("string")
             elif expr.operator == '>':
                 return "true" if left > right else "false"
             elif expr.operator == '<':
@@ -63,6 +67,8 @@ class Interpreter:
         self.hadError = True
         if type == "unary":
             print("Operand must be a number.", file=sys.stderr)
-        else:
+        elif type == "binary":
             print("Operands must be numbers.", file=sys.stderr)
+        elif type == "string":
+            print("Operands must be two numbers or two strings.", file=sys.stderr)
         exit(70)
