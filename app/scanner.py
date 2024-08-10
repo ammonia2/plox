@@ -53,7 +53,7 @@ class Scanner:
                 numVal += '.0'
                 floatAdded= True
 
-            #FloatAdded is check for manually addded .0 to number
+            #FloatAdded is check for manually addded .0 to number :😭
             newToken = Token("NUMBER", numVal if not floatAdded else numVal[:-2], float(numVal), self.lineNum)
             self.addToken(newToken)
             if (self.command == "tokenize"):
