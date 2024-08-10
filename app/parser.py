@@ -17,16 +17,16 @@ class Parser:
         elif self.isNil(currToken):
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
-            # if self.isStandaloneLiteral() and self.command != "parse":
-            print(currToken.lexeme," ", currToken.literal, file=sys.stderr)
-            try:
-                if int(currToken.lexeme)==float(currToken.lexeme) and self.isStandaloneLiteral():
-                    return Literal(int(currToken.lexeme))
-                return Literal(float(currToken.lexeme))
-            except ValueError:
-                return Literal(float(currToken.lexeme))
-            # else:
-            #     return Literal(currToken.literal)
+            if self.command != "parse":
+                print(currToken.lexeme," ", currToken.literal, file=sys.stderr)
+                try:
+                    if int(currToken.lexeme)==float(currToken.lexeme):
+                        return Literal(int(currToken.lexeme))
+                    return Literal(float(currToken.lexeme))
+                except ValueError:
+                    return Literal(float(currToken.lexeme))
+            else:
+                return Literal(currToken.literal)
         elif self.isStr(currToken):
             return Literal(currToken.literal)
         elif self.isBracket(currToken) == 1:
@@ -39,24 +39,6 @@ class Parser:
                 return None
         
         self.reportError(currToken)
-
-    def isStandaloneLiteral(self):
-        if len(self.tokenss) <= 2:
-            return True
-        
-        current_token_type = self.tokenss[self.curr].tokenType
-        
-        if self.curr +1<len(self.tokenss):
-            next_token_type = self.tokenss[self.curr + 1].tokenType
-            if next_token_type in ["PLUS", "MINUS", "STAR", "SLASH", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "BANG_EQUAL", "EQUAL_EQUAL"]:
-                return False
-        
-        if self.curr- 1>=0:
-            prev_token_type = self.tokenss[self.curr - 1].tokenType
-            if prev_token_type in ["PLUS", "MINUS", "STAR", "SLASH", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "BANG_EQUAL", "EQUAL_EQUAL"]:
-                return False
-        
-        return True
 
     def expression(self):
         return self.equality()
