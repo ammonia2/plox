@@ -50,18 +50,21 @@ class Interpreter:
                     return str(left) + str(right)
                 else:
                     self.reportError("string")
-            elif expr.operator == '>':
-                return "true" if left > right else "false"
-            elif expr.operator == '<':
-                return "true" if left < right else "false"
-            elif expr.operator == '>=':
-                return "true" if left >= right else "false"
-            elif expr.operator == '<=':
-                return "true" if left <= right else "false"
-            elif expr.operator == '==':
-                return "true" if left == right else "false"
-            elif expr.operator == '!=':
-                return "true" if left != right else "false"
+            elif expr.operator in ['==', '!=', '>', '<', '>=', '<=']:
+                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+                    self.reportError("binary")
+                if expr.operator == '>':
+                    return "true" if left > right else "false"
+                elif expr.operator == '<':
+                    return "true" if left < right else "false"
+                elif expr.operator == '>=':
+                    return "true" if left >= right else "false"
+                elif expr.operator == '<=':
+                    return "true" if left <= right else "false"
+                elif expr.operator == '==':
+                    return "true" if left == right else "false"
+                elif expr.operator == '!=':
+                    return "true" if left != right else "false"
 
     def reportError(self, type):
         self.hadError = True
