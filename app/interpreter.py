@@ -45,4 +45,6 @@ class Interpreter:
             elif expr.operator == '<=':
                 return "true" if left <= right else "false"
             elif expr.operator == '==':
-                return "true" if left == right else "false" 
+                return "true" if left == right else "false"
+            elif expr.operator == '!=':
+                return "true" if left != right else "false"
