@@ -35,7 +35,7 @@ def main():
     elif command== "parse":
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
-        expr=parser.parse()
+        expr=parser.parse(command)
         if parser.hadError: 
             exit(65)
         printer = PrintVisitor()
@@ -43,7 +43,7 @@ def main():
     elif command=="evaluate":
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
-        expr=parser.parse()
+        expr=parser.parse(command)
         interp = Interpreter()
         print(interp.interpret(expr))
 
