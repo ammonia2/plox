@@ -20,7 +20,7 @@ class Parser:
             # if self.isStandaloneLiteral() and self.command != "parse":
             print(currToken.lexeme," ", currToken.literal, file=sys.stderr)
             try:
-                print("int", file=sys.stderr)
+                int(currToken.lexeme)
                 return Literal(int(currToken.lexeme))
             except ValueError:
                 return Literal(float(currToken.lexeme))
