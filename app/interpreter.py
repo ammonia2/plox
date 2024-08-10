@@ -36,3 +36,13 @@ class Interpreter:
                     return left + right
                 else:
                     return str(left) + str(right)
+            elif expr.operator == '>':
+                return left > right
+            elif expr.operator == '<':
+                return left < right
+            elif expr.operator == '>=':
+                return left >= right
+            elif expr.operator == '<=':
+                return left <= right
+            elif expr.operator == '==':
+                return left == right
