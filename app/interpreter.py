@@ -46,7 +46,7 @@ class Interpreter:
             elif expr.operator == '+':
                 if (isinstance(left, int) and isinstance(right, int)) or (isinstance(left, float) and isinstance(right, float)):
                     return left + right
-                elif (isinstance(left, str) and isinstance(right, str)):
+                elif (isinstance(left, str) and isinstance(right, str)) and left not in ["true", "false", "nil"] and right not in ["true", "false", "nil"]:
                     return str(left) + str(right)
                 else:
                     self.reportError("string")
