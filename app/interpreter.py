@@ -23,7 +23,10 @@ class Interpreter:
             elif expr.operator == '*':
                 return left * right
             elif expr.operator == '/':
-                return left / right
+                try:
+                    return int(left / right)
+                except ValueError:
+                    return left / right
             elif expr.operator == '+':
                 if (isinstance(left, int) and isinstance(right, int)) or (isinstance(left, float) and isinstance(right, float)):
                     return left + right
