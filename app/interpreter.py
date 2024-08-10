@@ -15,3 +15,17 @@ class Interpreter:
                 if value =="false" or value == "nil":
                     return "true"
                 else: return "false"
+        elif isinstance(expr, Binary):
+            left = self.interpret(expr.left)
+            right = self.interpret(expr.right)
+            if expr.operaor=='-':
+                return left - right
+            elif expr.operator == '*':
+                return left * right
+            elif expr.operator == '/':
+                return left / right
+            elif expr.operator == '+':
+                if (isinstance(left, int) and isinstance(right, int)) or (isinstance(left, float) and isinstance(right, float)):
+                    return left + right
+                else:
+                    return str(left) + str(right)

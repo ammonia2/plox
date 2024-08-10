@@ -1,7 +1,7 @@
 class Token:
     tokenType:str
-    lexeme: str # the field name of token in tokenDict
-    literal: str
+    lexeme # the field name of token in tokenDict
+    literal
     lineNum: int
 
     def __init__(self, t:str, lex:str, lit:str, ln:int):
