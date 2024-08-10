@@ -30,7 +30,7 @@ class Parser:
         elif self.isNil(currToken):
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
-            return Literal(currToken.literal)
+            return Literal(currToken.lexeme)
         elif self.isStr(currToken):
             return Literal(currToken.literal)
         elif self.isBracket(currToken) == 1:
