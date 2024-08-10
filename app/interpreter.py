@@ -27,8 +27,12 @@ class Interpreter:
             if expr.operator=='-':
                 return left - right
             elif expr.operator == '*':
+                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+                    self.reportError("binary")
                 return left * right
             elif expr.operator == '/':
+                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+                    self.reportError("binary")
                 try:
                     int(left)
                     int(right)
@@ -55,7 +59,10 @@ class Interpreter:
             elif expr.operator == '!=':
                 return "true" if left != right else "false"
 
-    def reportError(self):
+    def reportError(self, type):
         self.hadError = True
-        print("Operand must be a number.", file=sys.stderr)
+        if type == "unary":
+            print("Operand must be a number.", file=sys.stderr)
+        else:
+            print("Operands must be numbers.", file=sys.stderr)
         exit(70)
