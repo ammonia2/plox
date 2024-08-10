@@ -37,12 +37,12 @@ class Interpreter:
                 else:
                     return str(left) + str(right)
             elif expr.operator == '>':
-                return left > right
+                return "true" if left > right else "false"
             elif expr.operator == '<':
-                return left < right
+                return "true" if left < right else "false"
             elif expr.operator == '>=':
-                return left >= right
+                return "true" if left >= right else "false"
             elif expr.operator == '<=':
-                return left <= right
+                return "true" if left <= right else "false"
             elif expr.operator == '==':
-                return left == right
+                return "true" if left == right else "false"
