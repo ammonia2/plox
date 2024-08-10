@@ -1,11 +1,21 @@
 class Interpreter:
 
     def interpret(self, expr):
-        if expr == "true" or expr=="false" or expr=="nil":
+        # Handle boolean literals and nil
+        if expr == "true" or expr == "false" or expr == "nil":
             return expr
-        elif int(expr):
+
+        # Try to convert to an integer
+        try:
             return int(expr)
-        elif float(expr):
+        except ValueError:
+            pass  # If it fails, proceed to the next check
+
+        # Try to convert to a float
+        try:
             return float(expr)
-        else:
-            return expr
+        except ValueError:
+            pass  # If it fails, return the expression as-is
+
+        # If it's neither an int nor a float, return it as is
+        return expr
