@@ -1,3 +1,6 @@
+import sys
+from app.tokeniser import Token
+
 class Scanner:
     source :str # raw source code string
     tokenss: Token = []
