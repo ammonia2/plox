@@ -50,7 +50,7 @@ class Visitor(ABC):
 
 class PrintVisitor(Visitor):
     def visitBinary(self, expr: Binary):
-        return f"({expr.operator.lexeme} {expr.left.accept(self)} {expr.right.accept(self)})"
+        return f"({expr.operator} {expr.left.accept(self)} {expr.right.accept(self)})"
 
     def visitGrouping(self, expr: Grouping):
         return self.parenthesize("group", expr.expression)
@@ -61,7 +61,7 @@ class PrintVisitor(Visitor):
         return str(expr.value)
 
     def visitUnary(self, expr: Unary):
-        return f"({expr.operator.lexeme} {expr.right.accept(self)})"
+        return f"({expr.operator} {expr.right.accept(self)})"
 
     def parenthesize(self, name, *exprs):
         string = f"({name}"
