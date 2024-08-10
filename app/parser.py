@@ -18,6 +18,7 @@ class Parser:
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
             # if self.isStandaloneLiteral() and self.command != "parse":
+            print(currToken.lexeme," ", currToken.literal)
             try:
                 return Literal(int(currToken.lexeme))
             except ValueError:
