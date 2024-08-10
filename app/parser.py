@@ -20,11 +20,11 @@ class Parser:
             if self.command != "parse":
                 print(currToken.lexeme," ", currToken.literal, file=sys.stderr)
                 try:
-                    if int(currToken.lexeme)==float(currToken.lexeme):
-                        return Literal(int(currToken.lexeme))
-                    return Literal(float(currToken.lexeme))
+                    if int(currToken.literal)==float(currToken.literal):
+                        return Literal(int(currToken.literal))
+                    return Literal(float(currToken.literal))
                 except ValueError:
-                    return Literal(float(currToken.lexeme))
+                    return Literal(float(currToken.literal))
             else:
                 return Literal(currToken.literal)
         elif self.isStr(currToken):
