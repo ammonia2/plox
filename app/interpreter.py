@@ -4,9 +4,15 @@ class Interpreter:
         if expr == "true" or expr=="false" or expr=="nil" or isinstance(expr, str):
             return expr
         elif isinstance(expr, str):
-            if expr.isdigit() or (expr[0] == '-' and expr[1:].isdigit()):
-                return int(expr)
             try:
-                return float(expr)
+                retVal = float(expr)
+                if retVal.is_integer():
+                    retVal = int(retVal)
+                return retVal
             except ValueError:
                 return expr
+        elif isinstance(expr, (int, float)):
+            retVal = expr
+            if isinstance(retVal, float) and retVal.is_integer():
+                retVal = int(retVal)
+            return retVal
