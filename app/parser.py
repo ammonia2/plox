@@ -35,10 +35,24 @@ class Parser:
                 return None
         
         self.reportError(currToken)
-        
-    def isStandaloneLiteral(self):
-        # Check if this literal is standalone (not part of a larger expression)
-        return len(self.tokenss)<2 and (self.tokenss[self.curr+1].tokenType not in ["PLUS", "MINUS", "STAR", "SLASH", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "BANG_EQUAL", "EQUAL_EQUAL"]) and (self.tokenss[self.curr-1].tokenType not in ["PLUS", "MINUS", "STAR", "SLASH", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "BANG_EQUAL", "EQUAL_EQUAL"])
+
+        def isStandaloneLiteral(self):
+            if len(self.tokenss) <= 2:
+                return True
+            
+            current_token_type = self.tokenss[self.curr].tokenType
+            
+            if self.curr +1<len(self.tokenss):
+                next_token_type = self.tokenss[self.curr + 1].tokenType
+                if next_token_type in ["PLUS", "MINUS", "STAR", "SLASH", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "BANG_EQUAL", "EQUAL_EQUAL"]:
+                    return False
+            
+            if self.curr- 1>=0:
+                prev_token_type = self.tokenss[self.curr - 1].tokenType
+                if prev_token_type in ["PLUS", "MINUS", "STAR", "SLASH", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "BANG_EQUAL", "EQUAL_EQUAL"]:
+                    return False
+            
+            return True
 
     def expression(self):
         return self.equality()
