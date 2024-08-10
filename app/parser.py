@@ -6,6 +6,7 @@ class Parser:
     tokenss: Token = []
     curr: int = 0
     hadError = False
+    command: str = ""
 
     def __init__(self, toka: Token):
         self.tokenss = toka
@@ -16,7 +17,7 @@ class Parser:
         elif self.isNil(currToken):
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
-            if self.isStandaloneLiteral():
+            if self.isStandaloneLiteral() and command != "parse":
                 try:
                     return Literal(int(currToken.lexeme))
                 except ValueError:
@@ -112,7 +113,8 @@ class Parser:
         self.curr += 1 if not self.isAtEnd() else 0
         return self.parse_token(token)
 
-    def parse(self):
+    def parse(self, cmd):
+        self.command = cmd
         expr = self.expression()
         if not self.hadError:
             return expr
