@@ -1,9 +1,11 @@
 class Interpreter:
 
     def interpret(self, expr):
-        if expr == "true" or expr=="false" or expr=="nil" or isinstance(expr, str):
+        if expr == "true" or expr=="false" or expr=="nil":
             return expr
-        elif expr.isdigit():
+        elif int(expr):
             return int(expr)
-        elif a.replace('.','',1).isdigit() and a.count('.') < 2:
+        elif float(expr):
             return float(expr)
+        else:
+            return expr
