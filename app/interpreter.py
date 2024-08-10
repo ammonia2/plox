@@ -11,4 +11,9 @@ class Interpreter:
             if expr.operator == "-":
                 return -self.interpret(expr.right)
             elif expr.operator == "!":
-                return not self.interpret(expr.right)
+                result = not self.interpret(expr.right)
+                if result == False:
+                    return "false"
+                elif result == True:
+                    return "true"
+                return result
