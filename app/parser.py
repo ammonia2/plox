@@ -20,6 +20,7 @@ class Parser:
             # if self.isStandaloneLiteral() and self.command != "parse":
             print(currToken.lexeme," ", currToken.literal, file=sys.stderr)
             try:
+                print("int", file=sys.stderr)
                 return Literal(int(currToken.lexeme))
             except ValueError:
                 return Literal(float(currToken.lexeme))
@@ -32,7 +33,7 @@ class Parser:
             if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN" and expr != "":
                 self.curr += 1
                 return Grouping(expr)
-            else: 
+            else:
                 self.hadError = True
                 return None
         
