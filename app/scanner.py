@@ -53,7 +53,14 @@ class Scanner:
                 numVal += '.0'
                 floatAdded= True
 
-            newToken = Token("NUMBER", int(numVal) if (not floatAdded) else int(numVal[:-2]), float(numVal), self.lineNum)
+            if (floatAdded): #manually added .0 check
+                numVal2 =int(numVal[:-2])
+            else:
+                try:
+                    numVal2 = int(numVal)
+                except ValueError:
+                    numVal2 = float(numVal)
+            newToken = Token("NUMBER", numVal2, float(numVal), self.lineNum)
             self.addToken(newToken)
             if (self.command == "tokenize"):
                 print(newToken.tokenisedForm())
