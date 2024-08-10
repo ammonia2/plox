@@ -24,7 +24,11 @@ class Interpreter:
                 return left * right
             elif expr.operator == '/':
                 try:
-                    return int(left / right)
+                    int(left)
+                    int(right)
+                    if (left%right == 0):
+                        return left // right
+                    return left / right
                 except ValueError:
                     return left / right
             elif expr.operator == '+':
