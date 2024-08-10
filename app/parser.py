@@ -2,20 +2,6 @@ import sys
 from app.tokeniser import Token
 from app.visitor import Visitor, Binary, Grouping, Literal, Unary
 
-# def Binary(left, operator, right):
-#     return f"({operator} {left} {right})"
-
-# def Grouping(expression):
-#     return f"(group {expression})"
-
-# def Literal(val):
-#     if val is None:
-#         return "nil"
-#     return str(val).lower()
-    
-# def Unary(operator, right):
-#     return f"({operator} {right})"
-
 class Parser:
     tokenss: Token = []
     curr: int = 0
@@ -30,10 +16,12 @@ class Parser:
         elif self.isNil(currToken):
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
-            # return Literal(currToken.lexeme) if int(currToken.lexeme) else Literal(currToken.literal)
-            try:
-                return Literal(int(currToken.lexeme))
-            except ValueError:
+            if self.isStandaloneLiteral():
+                try:
+                    return Literal(int(currToken.lexeme))
+                except ValueError:
+                    return Literal(float(currToken.lexeme))
+            else:
                 return Literal(currToken.literal)
         elif self.isStr(currToken):
             return Literal(currToken.literal)
@@ -48,6 +36,10 @@ class Parser:
         
         self.reportError(currToken)
         
+    def isStandaloneLiteral(self):
+        # Check if this literal is standalone (not part of a larger expression)
+        return self.curr == len(self.tokenss) - 1 or self.tokenss[self.curr + 1].tokenType == "EOF"
+
     def expression(self):
         return self.equality()
 
