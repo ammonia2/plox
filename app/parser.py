@@ -110,7 +110,8 @@ class Parser:
     def parse(self):
         expr = self.expression()
         if not self.hadError:
-            print(expr)
+            return expr
+        return None
 
     def isBracket(self, token) -> int:
         if token.tokenType=="LEFT_PAREN": return 1
