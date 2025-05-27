@@ -1,51 +1,63 @@
-[![progress-banner](https://backend.codecrafters.io/progress/interpreter/50111dfb-3b5e-4110-940f-c0ce54755f67)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Lox Interpreter made in Python
 
-This is a starting point for Python solutions to the
-["Build Your Own Build your own Interpreter" Challenge](https://app.codecrafters.io/courses/interpreter/overview).
+## Resources used for assistance
 
-This challenge follows the book
-[Crafting Interpreters](https://craftinginterpreters.com/) by Robert Nystrom.
+> Lox is not a real world language! It is made up by the author of the book mentioned below.
 
-In this challenge you'll build an interpreter for
-[Lox](https://craftinginterpreters.com/the-lox-language.html), a simple
-scripting language. Along the way, you'll learn about tokenization, ASTs,
-tree-walk interpreters and more.
+- [Crafting Interpreters](https://craftinginterpreters.com/) by Robert Nystrom
+- [CodeCrafters](https://app.codecrafters.io/courses/interpreter/) for automated tests
 
-Before starting this challenge, make sure you've read the "Welcome" part of the
-book that contains these chapters:
+## Code Structure
 
-- [Introduction](https://craftinginterpreters.com/introduction.html) (chapter 1)
-- [A Map of the Territory](https://craftinginterpreters.com/a-map-of-the-territory.html)
-  (chapter 2)
-- [The Lox Language](https://craftinginterpreters.com/the-lox-language.html)
-  (chapter 3)
+- `app/`
 
-These chapters don't involve writing code, so they won't be covered in this
-challenge. This challenge will start from chapter 4,
-[Scanning](https://craftinginterpreters.com/scanning.html).
+  - `main.py`: executes all the evaluate, parse, tokenize and other instructions after scanning the code provided
+  - `scanner.py`: tokenises all the code provided
+  - `tokeniser.py`: contains the `Token` class with token utility functions
+  - `parser.py`: parses all the tokens created by tokeniser to conver to Abstract Syntax Tree (AST)
+  - `visitor.py`: helper abstract classes (Binary, Grouping, Literal, Unary) for `parser.py` in creation of ASTs
+  - `interpreter.py`: evaluates the ASTs and produces output or identifies error based on the code
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Usage Examples
 
-# Passing the first stage
+Running main.py requires 3 arguments:`<br>`
 
-The entry point for your program is in `app/main.py`. Study and uncomment the
-relevant code, and push your changes to pass the first stage:
+- *filename*
+- *command (tokenize, parse, etc.)*
+- *code path (with .lox extension)*
 
-```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
-```
+Example command: `python main.py tokenize script.lox`
 
-Time to move on to the next stage!
+## Errors Handled
 
-# Stage 2 & beyond
+1. Lexical Errors (Scanner Level)
 
-Note: This section is for stages 2 and beyond.
+   - Unexpected characters
+   - Unterminated strings
+   - Invalid number formats
+2. Syntax Errors (Parser Level)
 
-1. Ensure you have `python (3.12)` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.py`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+   - Missing expressions
+   - Unmatched parentheses
+   - Invalid token sequences
+3. Runtime Errors (Interpreter Level)
+
+   - Type errors for unary operators
+   - Type errors for binary operators
+   - String concatenation errors
+
+### Exit Codes
+
+- **65**: Lexical or syntax errors
+- **70**: Runtime errors
+
+## Requirements
+
+Any stable Python version `<br><br>`
+
+**Libraries:**`<br>`
+
+- sys
+- abc (Abstract Base Class)
+
+> This is a project I am working on and off when I get the time to, so it is not complete by any means.

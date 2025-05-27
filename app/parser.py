@@ -11,7 +11,7 @@ class Parser:
     def __init__(self, toka: Token):
         self.tokenss = toka
         
-    def parse_token(self, currToken):
+    def parse_token(self, currToken: Token):
         if self.isBool(currToken):
             return Literal(currToken.lexeme)
         elif self.isNil(currToken):
