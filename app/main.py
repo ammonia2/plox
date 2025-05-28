@@ -2,7 +2,8 @@ import sys
 from app.tokeniser import Token
 from app.parser import Parser
 from app.scanner import Scanner
-from app.visitor import Visitor, PrintVisitor
+from app.expression import ExpressionVisitor, PrintExpressionVisitor
+from app.stmt import StmtVisitor, PrintStmtVisitor
 from app.interpreter import Interpreter
 
 def main():
@@ -16,7 +17,7 @@ def main():
     command: str = sys.argv[1]
     filename: str = sys.argv[2]
 
-    commands = ["parse", "tokenize", "evaluate"]
+    commands = ["parse", "tokenize", "evaluate", "run"]
 
     if command not in commands:
         print(f"Unknown command: {command}", file=sys.stderr)
@@ -38,7 +39,7 @@ def main():
         expr=parser.parse(command)
         if parser.hadError: 
             exit(65)
-        printer = PrintVisitor()
+        printer = PrintExpressionVisitor()
         print(expr.accept(printer))
     elif command=="evaluate":
         scanner.createTokens(command)
@@ -46,6 +47,16 @@ def main():
         expr=parser.parse(command)
         interp = Interpreter()
         print(interp.interpret(expr))
+    elif command=="run":
+        scanner.createTokens(command)
+        parser = Parser(scanner.tokenss)
+        statements = parser.parse(command)
+        if parser.hadError:
+            exit(65)
+
+        interp = Interpreter()
+        for stmt in statements:
+            interp.interpret(stmt)
 
     if (scanner.hadError):
         exit(65)

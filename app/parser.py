@@ -1,6 +1,7 @@
 import sys
 from app.tokeniser import Token
-from app.visitor import Visitor, Binary, Grouping, Literal, Unary
+from app.expression import Binary, Grouping, Literal, Unary
+from app.stmt import Block, Class, Expression, Function, If, Print, Return, Var, While
 
 class Parser:
     tokenss: Token = []
@@ -70,7 +71,7 @@ class Parser:
         while token and (token.tokenType == "MINUS" or token.tokenType == "PLUS"):
             operator = token.lexeme
             self.curr += 1
-            right = self.unary()
+            right = self.factor()
             token = self.tokenss[self.curr] if not self.isAtEnd() else None
             expr = Binary(expr, operator, right)
         return expr
@@ -99,10 +100,78 @@ class Parser:
 
     def parse(self, cmd):
         self.command = cmd
-        expr = self.expression()
-        if not self.hadError:
-            return expr
+        
+        if cmd == "run":
+            statements = []
+            while not self.isAtEnd():
+                stmt = self.statement()
+                statements.append(stmt)
+            if not self.hadError:
+                return statements
+        else:
+            expr = self.expression()
+            if not self.hadError:
+                return expr        
         return None
+    
+    # Expanded Grammar
+    # program        → statement* EOF ;
+    # statement      → exprStmt | printStmt ;
+    # exprStmt       → expression ";" ;
+    # printStmt      → "print" expression ";" ;
+    def statement(self):
+        if self.isAtEnd():
+            return None
+        
+        token = self.tokenss[self.curr]
+        if token.tokenType == "PRINT":
+            self.curr += 1
+            return self.printStatement()
+        
+        return self.expressionStatement()
+    
+    def printStatement(self):
+        # no expr and no semicolon
+        if self.isAtEnd():
+            self.hadError = True
+            printToken = self.tokenss[self.curr - 1]
+            print(f"[line {printToken.lineNum}] Error at 'print': Expect expression after 'print'.", file=sys.stderr)
+            return None
+
+        # no expr after print
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
+            self.hadError = True
+            print(f"[line {self.tokenss[self.curr].lineNum}] Error at '{self.tokenss[self.curr].lexeme}': Expect Expression.", file=sys.stderr)
+            self.curr += 1
+            return None
+    
+        expr = self.expression()
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
+            self.curr += 1
+        else:
+            # Missing semicolon is still an error
+            self.hadError = True
+            print(f"[line {self.tokenss[self.curr-1].lineNum}] Error: Expect ';' after print statement.", file=sys.stderr)
+        
+        return Print(expr)
+    
+    def expressionStatement(self):
+        expr = self.expression()
+
+        if self.isAtEnd():
+            self.hadError = True
+            print(f"[line {self.tokenss[self.curr-1].lineNum}] Error: Expect ';' after expression.", file=sys.stderr)
+            return Expression(expr)
+        
+        if self.tokenss[self.curr].tokenType == "SEMICOLON":
+            self.curr += 1
+        else:
+            # Error: missing semicolon
+            token = self.tokenss[self.curr - 1]
+            self.hadError = True
+            print(f"[line {token.lineNum}] Error: Expect ';' after expression.", file=sys.stderr)
+        
+        return Expression(expr) if not self.hadError else None
 
     def isBracket(self, token) -> int:
         if token.tokenType == "LEFT_PAREN": return 1
@@ -122,7 +191,7 @@ class Parser:
         return token.tokenType == "STRING"
 
     def isAtEnd(self) -> bool:
-        return self.curr >= len(self.tokenss)
+        return self.curr >= len(self.tokenss) or (self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "EOF")
 
     def reportError(self, token):
         self.hadError = True

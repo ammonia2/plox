@@ -31,7 +31,7 @@ class Unary:
     def accept(self, visitor):
         return visitor.visitUnary(self)
 
-class Visitor(ABC):
+class ExpressionVisitor(ABC):
     @abstractmethod
     def visitBinary(self, expr: Binary):
         pass
@@ -48,7 +48,7 @@ class Visitor(ABC):
     def visitUnary(self, expr: Unary):
         pass
 
-class PrintVisitor(Visitor):
+class PrintExpressionVisitor(ExpressionVisitor):
     def visitBinary(self, expr: Binary):
         return f"({expr.operator} {expr.left.accept(self)} {expr.right.accept(self)})"
 

@@ -1,39 +1,42 @@
 import sys
-from app.visitor import Visitor, Binary, Grouping, Literal, Unary
+from app.expression import Binary, Grouping, Literal, Unary
+from app.stmt import Block, Class, Expression, Function, If, Print, Return, Var, While
 
 class Interpreter:
     hadError = False
 
-    def interpret(self, expr):
-        if isinstance(expr, Literal):
-            return expr.value
-        elif isinstance(expr, Grouping):
-            return self.interpret(expr.expression)
-        elif isinstance(expr, Unary):
-            if expr.operator == "-":
-                right = self.interpret(expr.right)
+    def interpret(self, node):
+        # -------------- expressions --------------------
+        if isinstance(node, Literal):
+            return node.value
+        elif isinstance(node, Grouping):
+            return self.interpret(node.expression)
+        elif isinstance(node, Unary):
+            if node.operator == "-":
+                right = self.interpret(node.right)
                 if isinstance(right, int) or isinstance(right, float):
                     return -right
                 else:
                     self.reportError("unary")
-            elif expr.operator == "!":
-                value = self.interpret(expr.right)
+            elif node.operator == "!":
+                value = self.interpret(node.right)
                 if value =="false" or value == "nil":
                     return "true"
                 else: return "false"
-        elif isinstance(expr, Binary):
-            left = self.interpret(expr.left)
-            right = self.interpret(expr.right)
-            if expr.operator=='-':
-                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+        elif isinstance(node, Binary):
+            left = self.interpret(node.left)
+            right = self.interpret(node.right)
+            if node.operator=='-':
+                if (not isinstance(left, int) and not isinstance(left, float) ) or (not isinstance(right, int) and not isinstance(right, float)):
                     self.reportError("binary")
+                    return
                 return left - right
-            elif expr.operator == '*':
-                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+            elif node.operator == '*':
+                if (not isinstance(left, int) and not isinstance(left, float) ) or (not isinstance(right, int) and not isinstance(right, float)):
                     self.reportError("binary")
                 return left * right
-            elif expr.operator == '/':
-                if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
+            elif node.operator == '/':
+                if (not isinstance(left, int) and not isinstance(left, float) ) or (not isinstance(right, int) and not isinstance(right, float)):
                     self.reportError("binary")
                 try:
                     int(left)
@@ -43,30 +46,48 @@ class Interpreter:
                     return left / right
                 except ValueError:
                     return left / right
-            elif expr.operator == '+':
+            elif node.operator == '+':
                 if (isinstance(left, int) and isinstance(right, int)) or (isinstance(left, float) and isinstance(right, float)):
                     return left + right
                 elif (isinstance(left, str) and isinstance(right, str)) and left not in ["true", "false", "nil"] and right not in ["true", "false", "nil"]:
                     return str(left) + str(right)
                 else:
                     self.reportError("string")
-            elif expr.operator in [ '>', '<', '>=', '<=']:
+            elif node.operator in [ '>', '<', '>=', '<=']:
                 if (not isinstance(left, int) and not isinstance(left, float) )or (not isinstance(right, int) and not isinstance(right, float)):
                     self.reportError("binary")
-                if expr.operator == '>':
+                if node.operator == '>':
                     return "true" if left > right else "false"
-                elif expr.operator == '<':
+                elif node.operator == '<':
                     return "true" if left < right else "false"
-                elif expr.operator == '>=':
+                elif node.operator == '>=':
                     return "true" if left >= right else "false"
-                elif expr.operator == '<=':
+                elif node.operator == '<=':
                     return "true" if left <= right else "false"
-            elif expr.operator in ['==', '!=']:
-                
-                if expr.operator == '==':
+            elif node.operator in ['==', '!=']:
+                if node.operator == '==':
                     return "true" if left == right else "false"
                 else:
                     return "true" if left != right else "false"
+                
+        # -------------- statements ------------------
+        elif isinstance(node, Print):
+            val = self.interpret(node.expression)
+            if val is None:
+                print("nil")
+            elif isinstance(val, bool):
+                print("true" if val else "false")
+            elif isinstance(val, float):
+                if val.is_integer():
+                    print(int(val))
+                else:
+                    print(val)
+            else:
+                print(val)
+        elif isinstance(node, Var):
+            pass
+        elif isinstance(node, Expression):
+            return self.interpret(node.expression)
 
     def reportError(self, type):
         self.hadError = True
