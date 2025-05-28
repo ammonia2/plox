@@ -137,4 +137,6 @@ class PrintStmtVisitor(StmtVisitor):
         pass
 
     def visitVar(self, stmt):
-        pass
+        if stmt.initialiser is None:
+            return f"(var {stmt.name.lexeme})"
+        return f"(var {stmt.name.lexeme} {stmt.initialiser.accept(self)})"

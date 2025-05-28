@@ -1,6 +1,6 @@
 import sys
 from app.tokeniser import Token
-from app.expression import Binary, Grouping, Literal, Unary, Variable
+from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 
 class Parser:
@@ -43,7 +43,7 @@ class Parser:
         self.reportError(currToken)
 
     def expression(self):
-        return self.equality()
+        return self.assignment()
 
     def equality(self):
         expr = self.comparison()
@@ -108,7 +108,6 @@ class Parser:
 
         name = self.tokenss[self.curr]
         self.curr += 1
-
         initialiser = None
         if (self.tokenss[self.curr].tokenType == "EQUAL"):
             self.curr += 1
@@ -134,6 +133,19 @@ class Parser:
             print(f"Parse error: {e}", file=sys.stderr)
             self.synchronize()
             return None
+        
+    def assignment(self):
+        expr = self.equality()
+
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "EQUAL":
+            equals = self.tokenss[self.curr]
+            self.curr += 1
+            value = self.assignment()
+            if isinstance(expr, Variable):
+                name = expr.name
+                return Assign(name, value)
+            self.reportError(equals, "Invalid assignment target.")
+        return expr
 
     def parse(self, cmd):
         self.command = cmd

@@ -38,6 +38,14 @@ class Variable:
 
     def accept(self, visitor):
         return visitor.visitVariable(self)
+    
+class Assign:
+    def __init__(self, name: Token, value):
+        self.name = name
+        self.value = value
+
+    def accept(self, visitor):
+        return visitor.visitAssign(self)
 
 class ExpressionVisitor(ABC):
     @abstractmethod
@@ -58,6 +66,10 @@ class ExpressionVisitor(ABC):
     
     @abstractmethod
     def visitVariable(self, expr: Variable):
+        pass
+
+    @abstractmethod
+    def visitAssign(self, expr: Assign):
         pass
 
 class PrintExpressionVisitor(ExpressionVisitor):
@@ -83,4 +95,7 @@ class PrintExpressionVisitor(ExpressionVisitor):
         return string
     
     def visitVariable(self, expr: Variable):
-        pass
+        return expr.name.lexeme
+
+    def visitAssign(self, expr: Variable):
+        return f'(assign {expr.name.lexeme} {expr.value.accept(self)})'

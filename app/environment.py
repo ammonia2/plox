@@ -1,3 +1,4 @@
+import sys
 from app.tokeniser import Token
 
 class Environment:
@@ -11,5 +12,14 @@ class Environment:
         if name.lexeme in self.values:
             return self.values[name.lexeme]
         
-        raise RuntimeError(f"Undefined variable '{name.lexeme}'.")
+        self.__reportError(name.lexeme)
         
+    def assign(self, name: Token, value):
+        if name.lexeme not in self.values:
+            self.__reportError(name.lexeme)
+        
+        self.values[name.lexeme] = value
+
+    def __reportError(self, name):
+        print(f"Undefined Variable '{name}'.", file=sys.stderr)
+        exit(70)

@@ -1,5 +1,5 @@
 import sys
-from app.expression import Binary, Grouping, Literal, Unary, Variable
+from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 from app.environment import Environment
 
@@ -74,6 +74,10 @@ class Interpreter:
                     return "true" if left != right else "false"
         elif isinstance(node, Variable):
             return self.environment.get(node.name)
+        elif isinstance(node, Assign):
+            value = self.interpret(node.value)
+            self.environment.assign(node.name, value)
+            return value
                 
         # -------------- statements ------------------
         elif isinstance(node, Print):
