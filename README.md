@@ -26,7 +26,7 @@ Running main.py requires 3 arguments:`<br>`
 - *command (tokenize, parse, etc.)*
 - *code path (with .lox extension)*
 
-Example command: `python main.py tokenize script.lox`
+Example command: `python -m main.py tokenize script.lox` or `./your_program.sh tokenize script.lox`
 
 ## Errors Handled
 
