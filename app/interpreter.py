@@ -1,9 +1,12 @@
 import sys
-from app.expression import Binary, Grouping, Literal, Unary
-from app.stmt import Block, Class, Expression, Function, If, Print, Return, Var, While
+from app.expression import Binary, Grouping, Literal, Unary, Variable
+from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
+from app.environment import Environment
 
 class Interpreter:
-    hadError = False
+    def __init__(self):
+        self.hadError = False
+        self.environment = Environment()
 
     def interpret(self, node):
         # -------------- expressions --------------------
@@ -69,6 +72,8 @@ class Interpreter:
                     return "true" if left == right else "false"
                 else:
                     return "true" if left != right else "false"
+        elif isinstance(node, Variable):
+            return self.environment.get(node.name)
                 
         # -------------- statements ------------------
         elif isinstance(node, Print):
@@ -85,7 +90,11 @@ class Interpreter:
             else:
                 print(val)
         elif isinstance(node, Var):
-            pass
+            value = None
+            if node.initialiser is not None:
+                value = self.interpret(node.initialiser)
+            self.environment.define(node.name, value)
+            return None
         elif isinstance(node, Expression):
             return self.interpret(node.expression)
 

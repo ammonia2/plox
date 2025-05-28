@@ -88,7 +88,7 @@ class StmtVisitor(ABC):
         pass
 
     @abstractmethod
-    def visitExpression(self, stmt):
+    def visitExpression(self, expr):
         pass
 
     @abstractmethod
@@ -121,8 +121,8 @@ class PrintStmtVisitor(StmtVisitor):
     def visitClass(self, stmt):
         pass
 
-    def visitExpression(self, stmt):
-        pass
+    def visitExpression(self, expr):
+        return f'(expression {expr.expression.accept(self)})'
 
     def visitFunction(self, stmt):
         pass

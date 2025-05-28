@@ -1,7 +1,7 @@
 import sys
 from app.tokeniser import Token
-from app.expression import Binary, Grouping, Literal, Unary
-from app.stmt import Block, Class, Expression, Function, If, Print, Return, Var, While
+from app.expression import Binary, Grouping, Literal, Unary, Variable
+from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 
 class Parser:
     tokenss: Token = []
@@ -29,6 +29,8 @@ class Parser:
                 return Literal(currToken.literal)
         elif self.isStr(currToken):
             return Literal(currToken.literal)
+        elif self.isIdentifier(currToken):
+            return Variable(currToken)
         elif self.isBracket(currToken) == 1:
             expr = self.expression()
             if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN" and expr != "":
@@ -97,6 +99,41 @@ class Parser:
 
         self.curr += 1 if not self.isAtEnd() else 0
         return self.parse_token(token)
+    
+    def varDeclaration(self):
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "IDENTIFIER":
+            token = self.tokenss[self.curr - 1]
+            self.reportError(self.tokenss[self.curr - 1], errorText="Expect variable name.")
+            return None
+
+        name = self.tokenss[self.curr]
+        self.curr += 1
+
+        initialiser = None
+        if (self.tokenss[self.curr].tokenType == "EQUAL"):
+            self.curr += 1
+            initialiser = self.expression()
+
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "SEMICOLON":
+            token = self.tokenss[self.curr - 1]
+            self.reportError(token, errorText = "Expect ';' after expression.")
+        else:
+            self.curr += 1
+        
+        return Var(name, initialiser)
+
+    def declaration(self):
+        try:
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "VAR":
+                self.curr +=1
+                return self.varDeclaration()
+            return self.statement()
+        except Exception as e:
+            # any parsing error
+            self.hadError = True
+            print(f"Parse error: {e}", file=sys.stderr)
+            self.synchronize()
+            return None
 
     def parse(self, cmd):
         self.command = cmd
@@ -104,8 +141,7 @@ class Parser:
         if cmd == "run":
             statements = []
             while not self.isAtEnd():
-                stmt = self.statement()
-                statements.append(stmt)
+                statements.append(self.declaration())
             if not self.hadError:
                 return statements
         else:
@@ -114,11 +150,6 @@ class Parser:
                 return expr        
         return None
     
-    # Expanded Grammar
-    # program        → statement* EOF ;
-    # statement      → exprStmt | printStmt ;
-    # exprStmt       → expression ";" ;
-    # printStmt      → "print" expression ";" ;
     def statement(self):
         if self.isAtEnd():
             return None
@@ -134,33 +165,31 @@ class Parser:
         # no expr and no semicolon
         if self.isAtEnd():
             self.hadError = True
-            printToken = self.tokenss[self.curr - 1]
-            print(f"[line {printToken.lineNum}] Error at 'print': Expect expression after 'print'.", file=sys.stderr)
-            return None
+            token = self.tokenss[self.curr - 1]
+            self.reportError(token, errorText = "Expect ';' after expression.")
 
+            return None
         # no expr after print
         if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
-            self.hadError = True
-            print(f"[line {self.tokenss[self.curr].lineNum}] Error at '{self.tokenss[self.curr].lexeme}': Expect Expression.", file=sys.stderr)
+            token = self.tokenss[self.curr - 1]
+            self.reportError(token, errorText="Expect Expression.")
             self.curr += 1
             return None
     
         expr = self.expression()
         if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
             self.curr += 1
-        else:
-            # Missing semicolon is still an error
-            self.hadError = True
-            print(f"[line {self.tokenss[self.curr-1].lineNum}] Error: Expect ';' after print statement.", file=sys.stderr)
-        
+        else: # missing semicolon
+            token = self.tokenss[self.curr - 1]
+            self.reportError(token, errorText = "Expect ';' after expression.")
+
         return Print(expr)
     
     def expressionStatement(self):
         expr = self.expression()
-
         if self.isAtEnd():
-            self.hadError = True
-            print(f"[line {self.tokenss[self.curr-1].lineNum}] Error: Expect ';' after expression.", file=sys.stderr)
+            token = self.tokenss[self.curr - 1]
+            self.reportError(token, errorText = "Expect ';' after expression.")
             return Expression(expr)
         
         if self.tokenss[self.curr].tokenType == "SEMICOLON":
@@ -168,8 +197,7 @@ class Parser:
         else:
             # Error: missing semicolon
             token = self.tokenss[self.curr - 1]
-            self.hadError = True
-            print(f"[line {token.lineNum}] Error: Expect ';' after expression.", file=sys.stderr)
+            self.reportError(token, errorText = "Expect ';' after expression.")
         
         return Expression(expr) if not self.hadError else None
 
@@ -192,7 +220,28 @@ class Parser:
 
     def isAtEnd(self) -> bool:
         return self.curr >= len(self.tokenss) or (self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "EOF")
+    
+    def isIdentifier(self, token) -> bool:
+        return token.tokenType == "IDENTIFIER"
 
-    def reportError(self, token):
+    def synchronize(self): # Skip tokens until reaching a statement boundary
+        if not self.isAtEnd():
+            self.curr += 1
+        
+        while not self.isAtEnd():
+            if self.tokenss[self.curr - 1].tokenType == "SEMICOLON":
+                return
+            
+            currTokenType = self.tokenss[self.curr].tokenType
+            if currTokenType in ["CLASS", "FUN", "VAR", "FOR", "IF", 
+                                     "WHILE", "PRINT", "RETURN"]:
+                return
+            
+            self.curr += 1
+
+    def reportError(self, token, errorText=None):
         self.hadError = True
-        print(f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.", file=sys.stderr)
+        if not errorText:
+            print(f"[line {token.lineNum}] Error at '{token.lexeme}': Expect Expression.", file=sys.stderr)
+        else:
+            print(f"[line {token.lineNum}] Error at '{token.lexeme}': {errorText}", file=sys.stderr)

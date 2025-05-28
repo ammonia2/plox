@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from app.tokeniser import Token
 
 class Binary:
     def __init__(self, left, operator, right):
@@ -30,6 +31,13 @@ class Unary:
 
     def accept(self, visitor):
         return visitor.visitUnary(self)
+    
+class Variable:
+    def __init__(self, name: Token):
+        self.name = name
+
+    def accept(self, visitor):
+        return visitor.visitVariable(self)
 
 class ExpressionVisitor(ABC):
     @abstractmethod
@@ -46,6 +54,10 @@ class ExpressionVisitor(ABC):
 
     @abstractmethod
     def visitUnary(self, expr: Unary):
+        pass
+    
+    @abstractmethod
+    def visitVariable(self, expr: Variable):
         pass
 
 class PrintExpressionVisitor(ExpressionVisitor):
@@ -69,3 +81,6 @@ class PrintExpressionVisitor(ExpressionVisitor):
             string += f" {expr.accept(self)}"
         string += ")"
         return string
+    
+    def visitVariable(self, expr: Variable):
+        pass

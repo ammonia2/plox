@@ -3,7 +3,7 @@ from app.tokeniser import Token
 from app.parser import Parser
 from app.scanner import Scanner
 from app.expression import ExpressionVisitor, PrintExpressionVisitor
-from app.stmt import StmtVisitor, PrintStmtVisitor
+from app.statement import StmtVisitor, PrintStmtVisitor
 from app.interpreter import Interpreter
 
 def main():
