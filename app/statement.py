@@ -113,28 +113,49 @@ class StmtVisitor(ABC):
 
 class PrintStmtVisitor(StmtVisitor):
     def visitWhile(self, expr):
-        pass
+        return f"(while {expr.condition.accept(self)} {expr.body.accept(self)})"
 
     def visitBlock(self, stmt):
-        pass
+        result = "(block"
+        for statement in stmt.stmts:
+            result += f" {statement.accept(self)}"
+        result += ")"
+        return result
 
     def visitClass(self, stmt):
-        pass
+        result = f"(class {stmt.name.lexeme}"
+        if stmt.superclass:
+            result += f" < {stmt.superclass.name.lexeme}"
+        for method in stmt.methods:
+            result += f" {method.accept(self)}"
+        result += ")"
+        return result
 
     def visitExpression(self, expr):
         return f'(expression {expr.expression.accept(self)})'
 
     def visitFunction(self, stmt):
-        pass
+        result = f"(fun {stmt.name.lexeme}"
+        for param in stmt.params:
+            result += f" {param.lexeme}"
+        result += " "
+        for body_stmt in stmt.body:
+            result += body_stmt.accept(self)
+        result += ")"
+        return result
 
     def visitIf(self, stmt):
-        pass
+        if stmt.elseBranch:
+            return f"(if {stmt.condition.accept(self)} {stmt.thenBranch.accept(self)} {stmt.elseBranch.accept(self)})"
+        return f"(if {stmt.condition.accept(self)} {stmt.thenBranch.accept(self)})"
 
     def visitPrint(self, stmt):
         return f'(print {stmt.expression.accept(self)})'
 
     def visitReturn(self, stmt):
-        pass
+        if stmt.value:
+            return f"(return {stmt.value.accept(self)})"
+        return "(return)"
 
     def visitVar(self, stmt):
         if stmt.initialiser is None:

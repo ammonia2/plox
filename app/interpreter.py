@@ -101,6 +101,18 @@ class Interpreter:
             return None
         elif isinstance(node, Expression):
             return self.interpret(node.expression)
+        elif isinstance(node, Block):
+            self.executeBlock(node.stmts, Environment(self.environment))
+            return None
+
+    def executeBlock(self, stmts: list, env: Environment):
+        previous: Environment = self.environment
+        try:
+            self.environment = env
+            for stmt in stmts:
+                self.interpret(stmt)
+        finally:
+            self.environment = previous
 
     def reportError(self, type):
         self.hadError = True

@@ -170,8 +170,22 @@ class Parser:
         if token.tokenType == "PRINT":
             self.curr += 1
             return self.printStatement()
-        
+        if token.tokenType == "LEFT_BRACE":
+            self.curr += 1
+            return self.blockStatement()
+
         return self.expressionStatement()
+    
+    def blockStatement(self):
+        stmts: list = []
+        while not self.isAtEnd() and not self.tokenss[self.curr].tokenType == "RIGHT_BRACE":
+            stmts.append(self.declaration())
+
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_BRACE":
+            self.curr += 1
+        else:
+            self.reportError(self.tokenss[self.curr-1], errorText="Expect '}' after block.")
+        return Block(stmts)
     
     def printStatement(self):
         # no expr and no semicolon
