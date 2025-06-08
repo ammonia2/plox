@@ -50,7 +50,7 @@ class Interpreter:
                 except ValueError:
                     return left / right
             elif node.operator == '+':
-                if (isinstance(left, int) and isinstance(right, int)) or (isinstance(left, float) and isinstance(right, float)):
+                if (isinstance(left, (int, float)) and isinstance(right, (int, float))):
                     return left + right
                 elif (isinstance(left, str) and isinstance(right, str)) and left not in ["true", "false", "nil"] and right not in ["true", "false", "nil"]:
                     return str(left) + str(right)

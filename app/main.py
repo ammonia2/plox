@@ -17,7 +17,7 @@ def main():
     command: str = sys.argv[1]
     filename: str = sys.argv[2]
 
-    commands = ["parse", "tokenize", "evaluate", "run"]
+    commands = ["parse", "tokenize", "evaluate", "run", "debug"] # debug is for self debugging using PrintVisitors
 
     if command not in commands:
         print(f"Unknown command: {command}", file=sys.stderr)
@@ -51,12 +51,24 @@ def main():
         scanner.createTokens(command)
         parser = Parser(scanner.tokenss)
         statements = parser.parse(command)
+        
         if parser.hadError:
             exit(65)
 
         interp = Interpreter()
         for stmt in statements:
             interp.interpret(stmt)
+    elif command == "debug":
+        scanner.createTokens(command)
+        parser = Parser(scanner.tokenss)
+        statements = parser.parse("run")
+        
+        if parser.hadError:
+            exit(65)
+        
+        # Create printers for both types
+        expr_printer = PrintExpressionVisitor()
+        stmt_printer = PrintStmtVisitor()
 
     if (scanner.hadError):
         exit(65)
