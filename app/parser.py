@@ -1,6 +1,6 @@
 import sys
 from app.tokeniser import Token
-from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign
+from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 
 class Parser:
@@ -134,8 +134,28 @@ class Parser:
             self.synchronize()
             return None
         
-    def assignment(self):
+    def OR(self):
+        expr = self.AND()
+        while not self.isAtEnd() and self.tokenss[self.curr].tokenType == "OR":
+            operator: Token = self.tokenss[self.curr]
+            self.curr += 1
+            right = self.AND()
+            expr = Logical(expr, operator, right)
+
+        return expr
+
+    def AND(self):
         expr = self.equality()
+        while not self.isAtEnd() and self.tokenss[self.curr].tokenType == "AND":
+            operator: Token = self.tokenss[self.curr]
+            self.curr += 1
+            right = self.equality()
+            expr = Logical(expr, operator, right)
+
+        return expr
+
+    def assignment(self):
+        expr = self.OR()
 
         if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "EQUAL":
             equals = self.tokenss[self.curr]
@@ -167,6 +187,9 @@ class Parser:
             return None
         
         token = self.tokenss[self.curr]
+        if token.tokenType == "IF":
+            self.curr += 1
+            return self.ifStatement()
         if token.tokenType == "PRINT":
             self.curr += 1
             return self.printStatement()
@@ -176,6 +199,25 @@ class Parser:
 
         return self.expressionStatement()
     
+    def ifStatement(self):
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
+            self.curr += 1
+            condition = self.expression()
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
+                self.curr += 1
+                thenBranch = self.statement()
+                elseBranch = None
+                if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "ELSE":
+                    self.curr += 1
+                    elseBranch = self.statement()
+                return If(condition, thenBranch, elseBranch)
+            else:
+                self.reportError(self.tokenss[self.curr-1], errorText="Expect ')' after if condition.")
+                return None
+        else:
+            self.reportError(self.tokenss[self.curr-1], errorText="Expect '(' after 'if'.")
+            return None
+
     def blockStatement(self):
         stmts: list = []
         while not self.isAtEnd() and not self.tokenss[self.curr].tokenType == "RIGHT_BRACE":

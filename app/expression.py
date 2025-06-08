@@ -46,6 +46,15 @@ class Assign:
 
     def accept(self, visitor):
         return visitor.visitAssign(self)
+    
+class Logical:
+    def __init__(self, left, operator: Token, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
+    
+    def accept(self, visitor):
+        return visitor.visitLogical(self)
 
 class ExpressionVisitor(ABC):
     @abstractmethod
@@ -70,6 +79,10 @@ class ExpressionVisitor(ABC):
 
     @abstractmethod
     def visitAssign(self, expr: Assign):
+        pass
+
+    @abstractmethod
+    def visitLogical(self, expr: Logical):
         pass
 
 class PrintExpressionVisitor(ExpressionVisitor):
@@ -99,3 +112,6 @@ class PrintExpressionVisitor(ExpressionVisitor):
 
     def visitAssign(self, expr: Variable):
         return f'(assign {expr.name.lexeme} {expr.value.accept(self)})'
+    
+    def visitLogical(self, expr: Logical):
+        return f"({expr.operator.lexeme} {expr.left.accept(self)} {expr.right.accept(self)})"

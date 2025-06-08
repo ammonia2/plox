@@ -1,5 +1,5 @@
 import sys
-from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign
+from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 from app.environment import Environment
 
@@ -78,6 +78,15 @@ class Interpreter:
             value = self.interpret(node.value)
             self.environment.assign(node.name, value)
             return value
+        elif isinstance(node, Logical):
+            left = self.interpret(node.left)
+            if node.operator.tokenType == "OR":
+                if not (not left or left == "false"): # exit if already true
+                    return left
+            else: # AND
+                if not left or left == "false": # exit if already false
+                    return left
+            return self.interpret(node.right)
                 
         # -------------- statements ------------------
         elif isinstance(node, Print):
@@ -103,6 +112,13 @@ class Interpreter:
             return self.interpret(node.expression)
         elif isinstance(node, Block):
             self.executeBlock(node.stmts, Environment(self.environment))
+            return None
+        elif isinstance(node, If):
+            val = self.interpret(node.condition)
+            if val and val != "false": # if any true val
+                self.interpret(node.thenBranch)
+            elif node.elseBranch is not None:
+                self.interpret(node.elseBranch)
             return None
 
     def executeBlock(self, stmts: list, env: Environment):
