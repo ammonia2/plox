@@ -186,19 +186,67 @@ class Parser:
         if self.isAtEnd():
             return None
         
-        token = self.tokenss[self.curr]
+        token: Token = self.tokenss[self.curr]
+        if token.tokenType == "FOR":
+            self.curr += 1
+            return self.forStatement()
         if token.tokenType == "IF":
             self.curr += 1
             return self.ifStatement()
         if token.tokenType == "PRINT":
             self.curr += 1
             return self.printStatement()
+        if token.tokenType == "WHILE":
+            self.curr += 1
+            return self.whileStatement()
         if token.tokenType == "LEFT_BRACE":
             self.curr += 1
             return self.blockStatement()
 
         return self.expressionStatement()
     
+    def forStatement(self):
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
+            self.curr += 1
+            initialiser = None
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "VAR":
+                initialiser = self.varDeclaration()
+            elif not self.isAtEnd() and self.tokenss[self.curr].tokenType != "SEMICOLON":
+                initialiser = self.expressionStatement()
+
+            condition = None
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "SEMICOLON":
+                condition = self.expression()
+
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
+                self.curr += 1
+                increment = None
+                if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "RIGHT_PAREN":
+                    increment = self.expression()
+
+                if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
+                    self.curr += 1
+                    body = self.statement()
+                    if increment:
+                        body = Block([body, Expression(increment)])
+                    if condition == None:
+                        condition = Literal(True)
+
+                    body = While(condition, body)
+                    if initialiser:
+                        body = Block([initialiser, body])
+
+                    return body
+                else:
+                    self.reportError(self.tokenss[self.curr-1], errorText="Expect ')' after for clauses.")
+                    return None
+            else:
+                self.reportError(self.tokenss[self.curr-1], errorText="Expect ';' after loop condition.")
+                return None
+        else:
+            self.reportError(self.tokenss[self.curr-1], errorText="Expect '(' after 'for'.")
+            return None
+
     def ifStatement(self):
         if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
             self.curr += 1
@@ -253,6 +301,21 @@ class Parser:
 
         return Print(expr)
     
+    def whileStatement(self):
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
+            self.curr += 1
+            condition = self.expression()
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
+                self.curr += 1
+                body = self.statement()
+                return While(condition, body)
+            else:
+                self.reportError(self.tokenss[self.curr-1], errorText="Expect ')' after while condition.")
+                return None
+        else:
+            self.reportError(self.tokenss[self.curr-1], errorText="Expect '(' after 'while'.")
+            return None
+
     def expressionStatement(self):
         expr = self.expression()
         if self.isAtEnd():

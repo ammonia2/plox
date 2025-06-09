@@ -122,6 +122,9 @@ class Interpreter:
             elif node.elseBranch is not None:
                 self.interpret(node.elseBranch)
             return None
+        elif isinstance(node, While):
+            while self.isTruthy(self.interpret(node.condition)):
+                self.interpret(node.body)
 
     def executeBlock(self, stmts: list, env: Environment):
         previous: Environment = self.environment
