@@ -80,13 +80,21 @@ class Interpreter:
             return value
         elif isinstance(node, Logical):
             left = self.interpret(node.left)
+            print(f"DEBUG Logical - Operator: {node.operator.tokenType}, Left: {left} ({type(left)})")
             if node.operator.tokenType == "OR":
-                if not (not left or left == "false"): # exit if already true
+                if self.isTruthy(left): # exit if already true
+                    print(f"DEBUG OR - Left is truthy, returning: {left}")
                     return left
             else: # AND
-                if not left or left == "false": # exit if already false
+                if not self.isTruthy(left): # exit if already false
+                    print(f"DEBUG AND - Left is falsy, returning: {left}")
                     return left
-            return self.interpret(node.right)
+                else:
+                    print(f"DEBUG AND - Left is truthy, evaluating right...")
+            
+            right = self.interpret(node.right)
+            print(f"DEBUG Logical - Right: {right} ({type(right)})")
+            return right
                 
         # -------------- statements ------------------
         elif isinstance(node, Print):
@@ -129,6 +137,17 @@ class Interpreter:
                 self.interpret(stmt)
         finally:
             self.environment = previous
+
+    def isTruthy(self, value):
+        result = True
+        if value is None:
+            result =  False
+        if value=="false":
+            result = False
+        if value =="nil":
+            result = False
+        
+        return result
 
     def reportError(self, type):
         self.hadError = True
