@@ -80,20 +80,14 @@ class Interpreter:
             return value
         elif isinstance(node, Logical):
             left = self.interpret(node.left)
-            print(f"DEBUG Logical - Operator: {node.operator.tokenType}, Left: {left} ({type(left)})")
             if node.operator.tokenType == "OR":
                 if self.isTruthy(left): # exit if already true
-                    print(f"DEBUG OR - Left is truthy, returning: {left}")
                     return left
             else: # AND
                 if not self.isTruthy(left): # exit if already false
-                    print(f"DEBUG AND - Left is falsy, returning: {left}")
                     return left
-                else:
-                    print(f"DEBUG AND - Left is truthy, evaluating right...")
             
             right = self.interpret(node.right)
-            print(f"DEBUG Logical - Right: {right} ({type(right)})")
             return right
                 
         # -------------- statements ------------------
@@ -123,7 +117,7 @@ class Interpreter:
             return None
         elif isinstance(node, If):
             val = self.interpret(node.condition)
-            if val and val != "false": # if any true val
+            if val and val != "false" and val != "nil": # if any true val
                 self.interpret(node.thenBranch)
             elif node.elseBranch is not None:
                 self.interpret(node.elseBranch)
