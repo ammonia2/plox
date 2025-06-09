@@ -209,40 +209,47 @@ class Parser:
         if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
             self.curr += 1
             initialiser = None
-            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "VAR":
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
+                self.curr += 1
+            elif not self.isAtEnd() and self.tokenss[self.curr].tokenType == "VAR":
+                self.curr += 1
                 initialiser = self.varDeclaration()
-            elif not self.isAtEnd() and self.tokenss[self.curr].tokenType != "SEMICOLON":
+            else:
                 initialiser = self.expressionStatement()
-
+    
+            # Parse condition
             condition = None
             if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "SEMICOLON":
                 condition = self.expression()
-
             if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "SEMICOLON":
                 self.curr += 1
-                increment = None
-                if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "RIGHT_PAREN":
-                    increment = self.expression()
-
-                if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
-                    self.curr += 1
-                    body = self.statement()
-                    if increment:
-                        body = Block([body, Expression(increment)])
-                    if condition == None:
-                        condition = Literal(True)
-
-                    body = While(condition, body)
-                    if initialiser:
-                        body = Block([initialiser, body])
-
-                    return body
-                else:
-                    self.reportError(self.tokenss[self.curr-1], errorText="Expect ')' after for clauses.")
-                    return None
             else:
                 self.reportError(self.tokenss[self.curr-1], errorText="Expect ';' after loop condition.")
                 return None
+    
+            # Parse increment
+            increment = None
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "RIGHT_PAREN":
+                increment = self.expression()
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
+                self.curr += 1
+            else:
+                self.reportError(self.tokenss[self.curr-1], errorText="Expect ')' after for clauses.")
+                return None
+    
+            body = self.statement()
+    
+            # Desugaring
+            if increment is not None:
+                body = Block([body, Expression(increment)])
+    
+            if condition is None:
+                condition = Literal(True)
+            body = While(condition, body)
+            if initialiser is not None:
+                body = Block([initialiser, body])
+    
+            return body
         else:
             self.reportError(self.tokenss[self.curr-1], errorText="Expect '(' after 'for'.")
             return None
