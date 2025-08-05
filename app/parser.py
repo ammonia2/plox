@@ -1,6 +1,6 @@
 import sys
 from app.tokeniser import Token
-from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical
+from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical, Call
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 
 class Parser:
@@ -44,6 +44,38 @@ class Parser:
 
     def expression(self):
         return self.assignment()
+    
+    def finishCall(self, callee): # helper to parse arg list
+        arguments = []
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "RIGHT_PAREN":
+            while True:
+                if len(arguments) >= 255:
+                    self.reportError(self.tokenss[self.curr+1], "Can't have more than 255 arguments.")
+                arguments.append(self.expression())
+                if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "COMMA":
+                    self.curr += 1
+                else:
+                    break
+
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "RIGHT_PAREN":
+            paren: Token = self.tokenss[self.curr]
+            self.curr += 1
+        else:
+            self.reportError(self.tokenss[self.curr - 1], errorText="Expect ')' after arguments.")
+            return None
+
+        return Call(callee, paren, arguments)
+    
+    def call(self): # func call expr parsing
+        expr = self.parse_token(self.tokenss[self.curr])
+
+        while True:
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
+                expr = self.finishCall(expr)
+            else:
+                break
+
+        return expr
 
     def equality(self):
         expr = self.comparison()
@@ -98,7 +130,7 @@ class Parser:
             return Unary(operator, right)
 
         self.curr += 1 if not self.isAtEnd() else 0
-        return self.parse_token(token)
+        return self.call()
     
     def varDeclaration(self):
         if self.isAtEnd() or self.tokenss[self.curr].tokenType != "IDENTIFIER":

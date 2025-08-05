@@ -1,7 +1,8 @@
 import sys
-from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical
+from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical, Call
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 from app.environment import Environment
+from app.loxCallable import LoxCallable
 
 class Interpreter:
     def __init__(self):
@@ -89,6 +90,19 @@ class Interpreter:
             
             right = self.interpret(node.right)
             return right
+        elif isinstance(node, Call):
+            callee = self.interpret(node.callee)
+
+            args = []
+            for arg in node.arguments:
+                args.append(self.interpret(arg))
+
+            if not isinstance(callee, LoxCallable):
+                self.reportError("call", "Can only call functions and classes.")
+                return None
+
+            func: LoxCallable = callee
+            return func.call(self, args)
                 
         # -------------- statements ------------------
         elif isinstance(node, Print):
@@ -146,7 +160,7 @@ class Interpreter:
         
         return result
 
-    def reportError(self, type):
+    def reportError(self, type, message=None):
         self.hadError = True
         if type == "unary":
             print("Operand must be a number.", file=sys.stderr)
@@ -154,4 +168,6 @@ class Interpreter:
             print("Operands must be numbers.", file=sys.stderr)
         elif type == "string":
             print("Operands must be two numbers or two strings.", file=sys.stderr)
+        elif type == "call":
+            print(message if message else "Invalid function call.", file=sys.stderr)
         exit(70)

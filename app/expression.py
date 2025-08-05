@@ -56,6 +56,15 @@ class Logical:
     def accept(self, visitor):
         return visitor.visitLogical(self)
 
+class Call:
+    def __init__(self, callee, paren: Token, arguments: list):
+        self.callee = callee
+        self.paren = paren
+        self.arguments = arguments
+
+    def accept(self, visitor):
+        return visitor.visitCallExpr(self)
+
 class ExpressionVisitor(ABC):
     @abstractmethod
     def visitBinary(self, expr: Binary):
@@ -83,6 +92,10 @@ class ExpressionVisitor(ABC):
 
     @abstractmethod
     def visitLogical(self, expr: Logical):
+        pass
+    
+    @abstractmethod
+    def visitCallExpr(self, expr: Call):
         pass
 
 class PrintExpressionVisitor(ExpressionVisitor):
@@ -115,3 +128,8 @@ class PrintExpressionVisitor(ExpressionVisitor):
     
     def visitLogical(self, expr: Logical):
         return f"({expr.operator.lexeme} {expr.left.accept(self)} {expr.right.accept(self)})"
+    
+    def visitCallExpr(self, expr: Call):
+        callee = expr.callee.accept(self)
+        args = " ".join(arg.accept(self) for arg in expr.arguments)
+        return f"(call {callee} {args})"
