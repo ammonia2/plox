@@ -5,3 +5,7 @@ class LoxCallable(ABC):
     @abstractmethod
     def call( interpreter: Interpreter, arguments: list):
         pass
+
+    @abstractmethod
+    def arity():
+        pass

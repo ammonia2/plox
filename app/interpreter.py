@@ -102,6 +102,10 @@ class Interpreter:
                 return None
 
             func: LoxCallable = callee
+            if len(args) != func.arity():
+                self.reportError("call", f"Expected {func.arity()} arguments but got {len(args)}.")
+                return None
+            
             return func.call(self, args)
                 
         # -------------- statements ------------------
