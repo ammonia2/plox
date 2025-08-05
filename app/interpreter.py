@@ -18,7 +18,6 @@ class Interpreter:
     def __init__(self):
         self.hadError = False
         self.globals = Environment()
-        # self.environment = Environment()
         self.environment = self.globals
 
     def interpret(self, node):

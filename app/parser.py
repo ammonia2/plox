@@ -152,10 +152,59 @@ class Parser:
             self.curr += 1
         
         return Var(name, initialiser)
+    
+    def function(self, kind: str):
+        # function name
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "IDENTIFIER":
+            self.reportError(self.tokenss[self.curr - 1], errorText=f"Expect {kind} name.")
+            return None
+        name = self.tokenss[self.curr]
+        self.curr += 1
+
+        # parameter list
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "LEFT_PAREN":
+            self.reportError(self.tokenss[self.curr - 1], errorText=f"Expect '(' after {kind} name.")
+            return None
+        self.curr += 1
+
+        parameters = []
+        if not self.isAtEnd() and self.tokenss[self.curr].tokenType != "RIGHT_PAREN":
+            while True:
+                if len(parameters) >= 255:
+                    self.reportError(self.tokenss[self.curr], errorText="Can't have more than 255 parameters.")
+                if self.tokenss[self.curr].tokenType != "IDENTIFIER":
+                    self.reportError(self.tokenss[self.curr], errorText="Expect parameter name.")
+                    return None
+                parameters.append(self.tokenss[self.curr])
+                self.curr += 1
+                if self.isAtEnd() or self.tokenss[self.curr].tokenType != "COMMA":
+                    break
+                self.curr += 1
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "RIGHT_PAREN":
+            self.reportError(self.tokenss[self.curr - 1], errorText="Expect ')' after parameters.")
+            return None
+        self.curr += 1
+
+        # function body
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "LEFT_BRACE":
+            self.reportError(self.tokenss[self.curr - 1], errorText=f"Expect '{{' before {kind} body.")
+            return None
+        self.curr += 1
+        body = self.blockStatement()
+        
+        if self.isAtEnd() or self.tokenss[self.curr].tokenType != "RIGHT_BRACE":
+            self.reportError(self.tokenss[self.curr - 1], errorText=f"Expect '}}' after {kind} body.")
+            return None
+        self.curr += 1
+
+        return Function(name, parameters, body)
 
     def declaration(self):
         try:
-            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "VAR":
+            if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "FUN":
+                self.curr += 1
+                return self.function("function")
+            elif not self.isAtEnd() and self.tokenss[self.curr].tokenType == "VAR":
                 self.curr +=1
                 return self.varDeclaration()
             return self.statement()

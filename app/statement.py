@@ -23,16 +23,16 @@ class Expression:
 
     def accept(self, visitor):
         return visitor.visitExpression(self)
-    
+
 class Function:
-    def __init__(self, name: Token, params, body):
+    def __init__(self, name: Token, params: list[Token], body: list):
         self.name = name
         self.params = params
         self.body = body
 
     def accept(self, visitor):
         return visitor.visitFunction(self)
-    
+
 class If:
     def __init__(self, condition, thenBranch, elseBranch):
         self.condition = condition
