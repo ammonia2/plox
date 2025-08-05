@@ -1,13 +1,25 @@
-import sys
+import sys, time
 from app.expression import Binary, Grouping, Literal, Unary, Variable, Assign, Logical, Call
 from app.statement import Block, Class, Expression, Function, If, Print, Return, Var, While
 from app.environment import Environment
 from app.loxCallable import LoxCallable
 
+class ClockCallable(LoxCallable):
+    def arity(self):
+        return 0
+    
+    def call(self, interpreter, argguments: list):
+        return time.time()
+    
+    def __str__(self):
+        return "<native fn>"
+
 class Interpreter:
     def __init__(self):
         self.hadError = False
-        self.environment = Environment()
+        self.globals = Environment()
+        # self.environment = Environment()
+        self.environment = self.globals
 
     def interpret(self, node):
         # -------------- expressions --------------------

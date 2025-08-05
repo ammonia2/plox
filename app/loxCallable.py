@@ -3,9 +3,12 @@ from abc import ABC, abstractmethod
 
 class LoxCallable(ABC):
     @abstractmethod
-    def call( interpreter: Interpreter, arguments: list):
+    def call(self, interpreter: Interpreter, arguments: list):
         pass
 
     @abstractmethod
-    def arity():
+    def arity(self):
+        pass
+
+    def __str__(self):
         pass
