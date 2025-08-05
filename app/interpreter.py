@@ -20,6 +20,8 @@ class Interpreter:
         self.globals = Environment()
         self.environment = self.globals
 
+        self.globals.define("clock", ClockCallable())
+
     def interpret(self, node):
         # -------------- expressions --------------------
         if isinstance(node, Literal):

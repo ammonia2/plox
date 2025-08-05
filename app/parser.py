@@ -41,6 +41,7 @@ class Parser:
                 return None
         
         self.reportError(currToken)
+        self.curr += 1
 
     def expression(self):
         return self.assignment()
@@ -68,9 +69,11 @@ class Parser:
     
     def call(self): # func call expr parsing
         expr = self.parse_token(self.tokenss[self.curr])
+        self.curr += 1
 
         while True:
             if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
+                self.curr += 1
                 expr = self.finishCall(expr)
             else:
                 break
@@ -129,7 +132,7 @@ class Parser:
             right = self.unary()
             return Unary(operator, right)
 
-        self.curr += 1 if not self.isAtEnd() else 0
+        # self.curr += 1 if not self.isAtEnd() else 0
         return self.call()
     
     def varDeclaration(self):

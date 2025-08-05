@@ -7,7 +7,10 @@ class Environment:
         self.enclosing: 'Environment' = enclosing
         
     def define(self, name: str, value):
-        self.values[name.lexeme] = value
+        if isinstance(name, Token):
+            self.values[name.lexeme] = value
+        else:
+            self.values[name] = value
 
     def get(self, name: Token): # returns value
         if name.lexeme in self.values:
