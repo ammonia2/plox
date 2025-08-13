@@ -1,5 +1,6 @@
 # local test files
 test.lox
+test2.lox
 test.py
 
 # Byte-compiled / optimized / DLL files

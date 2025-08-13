@@ -14,10 +14,13 @@ class Parser:
         
     def parse_token(self, currToken: Token):
         if self.isBool(currToken):
+            self.curr += 1
             return Literal(currToken.lexeme)
         elif self.isNil(currToken):
+            self.curr += 1
             return Literal(currToken.lexeme)
         elif self.isNum(currToken):
+            self.curr += 1
             if self.command != "parse":
                 try:
                     if int(currToken.literal)==float(currToken.literal):
@@ -28,13 +31,16 @@ class Parser:
             else:
                 return Literal(currToken.literal)
         elif self.isStr(currToken):
+            self.curr += 1
             return Literal(currToken.literal)
         elif self.isIdentifier(currToken):
+            self.curr += 1
             return Variable(currToken)
         elif self.isBracket(currToken) == 1:
+            self.curr += 1 # skip left paren
             expr = self.expression()
             if self.curr < len(self.tokenss) and self.tokenss[self.curr].tokenType == "RIGHT_PAREN" and expr != "":
-                self.curr += 1
+                self.curr += 1 #skip right paren
                 return Grouping(expr)
             else:
                 self.hadError = True
@@ -69,7 +75,9 @@ class Parser:
     
     def call(self): # func call expr parsing
         expr = self.parse_token(self.tokenss[self.curr])
-        self.curr += 1
+        
+        if expr is None:
+            return None
 
         while True:
             if not self.isAtEnd() and self.tokenss[self.curr].tokenType == "LEFT_PAREN":
@@ -132,7 +140,6 @@ class Parser:
             right = self.unary()
             return Unary(operator, right)
 
-        # self.curr += 1 if not self.isAtEnd() else 0
         return self.call()
     
     def varDeclaration(self):
